@@ -19,10 +19,12 @@ void normalize(int bytes) {
 	} 
 }
 
-void ls(char *dirname, DIR *directory, int intedation) {
+int ls(char *dirname, DIR *directory, int intedation) {
 	struct dirent *item;
 	directory = opendir(dirname);
 	struct stat st;
+
+	int dirsize = 0;
 	
 	if (directory) {
 		while ((item = readdir(directory)) != NULL) {
@@ -31,6 +33,7 @@ void ls(char *dirname, DIR *directory, int intedation) {
 				for (int i = 0 ; i < intedation ; i++) {
 					printf("  | ");
 				}
+
 
 				// creating new path
 				char temp = '/';
@@ -46,17 +49,28 @@ void ls(char *dirname, DIR *directory, int intedation) {
 				if(S_ISDIR(st.st_mode)) {
 					printf("^ %s\n", item->d_name);
 					// recursive call
-					ls(newpath, directory, intedation + 1);
+					dirsize += ls(newpath, directory, intedation + 1);
 				} else {
+					dirsize += st.st_size;
+
 					// print name
 					normalize(st.st_size);
 					printf("%s\n", item->d_name);
 				}
-				
 			}
 		}
+		
+		for (int i = 0 ; i < intedation - 1 ; i++) {
+			printf("  | ");
+		}
+		printf("  |_");
+		normalize(dirsize);
+		printf("\n");
+		
 		closedir(directory);
 	}
+
+	return dirsize;
 }
 
 
