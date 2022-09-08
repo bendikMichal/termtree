@@ -9,6 +9,8 @@
 
 #include "libs/stringEx.h"
 
+// use to build : gcc -o ttree tree.c libs/stringex.c
+
 // coloring
 void setColor(HANDLE cTerm, char *color) {
 	if (color == "greenBg"){
