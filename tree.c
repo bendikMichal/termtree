@@ -49,7 +49,7 @@ void normalize(int bytes) {
 	} 
 }
 
-int ls(char *dirname, DIR *directory, int intedation, char *search, bool searchEnabled, HANDLE cTerm) {
+int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *search, bool searchEnabled, HANDLE cTerm) {
 	struct dirent *item;
 	directory = opendir(dirname);
 	struct stat st;
@@ -63,8 +63,11 @@ int ls(char *dirname, DIR *directory, int intedation, char *search, bool searchE
 				resetColor(cTerm);
 
 				// make intedation
-				for (int i = 0 ; i < intedation ; i++) {
-					printf("  | ");
+
+				if (intedation + 1 < maxIntendation) {
+					for (int i = 0 ; i < intedation ; i++) {
+						printf("  | ");
+					}
 				}
 
 				// checking if searched file
@@ -83,28 +86,34 @@ int ls(char *dirname, DIR *directory, int intedation, char *search, bool searchE
 				stat(newpath, &st);
 			
 
-				if(S_ISDIR(st.st_mode)) {
-					printf("^ %s\n", item->d_name);
+				if(S_ISDIR(st.st_mode) ) {
+					if (intedation + 1 < maxIntendation) {
+						printf("^ %s\n", item->d_name);
+					}
 					// recursive call
-					dirsize += ls(newpath, directory, intedation + 1, search, searchEnabled, cTerm);
+					dirsize += ls(newpath, directory, intedation + 1, maxIntendation, search, searchEnabled, cTerm);
+
 				} else {
 					dirsize += st.st_size;
 
 					// print name
-					normalize(st.st_size);
-					printf("%s\n", item->d_name);
+					if (intedation + 1 < maxIntendation) {
+						normalize(st.st_size);
+						printf("%s\n", item->d_name);
+					}
 				}
-
 				resetColor(cTerm);
 			}
 		}
 		
-		for (int i = 0 ; i < intedation - 1 ; i++) {
-			printf("  | ");
+		if (intedation + 1 < maxIntendation) {
+			for (int i = 0 ; i < intedation - 1 ; i++) {
+				printf("  | ");
+			}
+			printf("  |_");
+			normalize(dirsize);
+			printf("\n");
 		}
-		printf("  |_");
-		normalize(dirsize);
-		printf("\n");
 		
 		closedir(directory);
 	}
@@ -114,30 +123,45 @@ int ls(char *dirname, DIR *directory, int intedation, char *search, bool searchE
 
 
 int main (int argc, char *argv[]) {
+	int maxIntendation = 99;
 	
 	bool searchEnabled = false;
 	char *search = calloc(2, sizeof(char));
 
-	if (argc > 2) {
+	if (argc > 3) {
 		printf("Too many arguments passed !");
 
 		return 1;
 	} 
 	// arguments passed
 	if (argc > 1) {
-		char flag[2];
-		substring(argv[1], flag, 0, 2);
+		for (int i = 1 ; i < argc ; i++) {
+			char flag[2] = "";
+			substring(argv[i], flag, 0, 2);
 
-		if (strcmp(flag, "-S") == 0 || strcmp(flag, "-s") == 0) {
-			searchEnabled = true;
-			char *temp = realloc(search, (strlen(argv[1]) - 2) * sizeof(char));
-			if (temp != NULL) {
-				search = temp;
+			if (strcmp(flag, "-S") == 0 || strcmp(flag, "-s") == 0) {
+				searchEnabled = true;
+				char *temp = realloc(search, (strlen(argv[i]) - 2) * sizeof(char));
+				if (temp != NULL) {
+					search = temp;
+				}
+				substring(argv[i], search, 2, 512);
+
+			} else if (strcmp(flag, "-I") == 0 || strcmp(flag, "-i") == 0) {
+				char temp[64] = "";
+				
+				substring(argv[i], temp, 2, 512);
+				maxIntendation = atoi(temp);
+
+				if (maxIntendation < 2) {
+					maxIntendation = 2;
+				}
+
+			}else {
+				printf("unknown flag: %s", flag);
+				return 1;
 			}
-			substring(argv[1], search, 2, 512);
-		} else {
-			printf("unknown flag: %s", flag);
-			return 1;
+			
 		}
 	}
 
@@ -147,7 +171,7 @@ int main (int argc, char *argv[]) {
 	DIR *directory;
 	
 	printf(".\n");
-	ls(".", directory, 0, search, searchEnabled, cTerm);
+	ls(".", directory, 0, maxIntendation, search, searchEnabled, cTerm);
 
 
 	free(search);
