@@ -1,9 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <math.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <windows.h>
+
+#include "libs/stringEx.h"
+
+// coloring
+void setColor(HANDLE cTerm, char *color) {
+	if (color == "greenBg"){
+		SetConsoleTextAttribute(cTerm, 0x20);
+	}else if (color == "green") {
+		SetConsoleTextAttribute(cTerm, 0x0a);
+	}else if (color == "brown") {
+		SetConsoleTextAttribute(cTerm, 0x06);
+	}
+}
+
+void allColors(HANDLE cTerm) {
+	for (int i = 0 ; i < 256; i++) {
+		SetConsoleTextAttribute(cTerm, i);
+
+		printf("\nTree %d", i);
+	}
+}
+
+void resetColor(HANDLE cTerm) {
+	SetConsoleTextAttribute(cTerm, 15);
+}
+//
 
 void normalize(int bytes) {
 	if (bytes >= pow(10, 12)) {
@@ -19,7 +47,7 @@ void normalize(int bytes) {
 	} 
 }
 
-int ls(char *dirname, DIR *directory, int intedation) {
+int ls(char *dirname, DIR *directory, int intedation, char *search, bool searchEnabled, HANDLE cTerm) {
 	struct dirent *item;
 	directory = opendir(dirname);
 	struct stat st;
@@ -29,11 +57,18 @@ int ls(char *dirname, DIR *directory, int intedation) {
 	if (directory) {
 		while ((item = readdir(directory)) != NULL) {
 			if (strcmp(item->d_name, ".") != 0 && strcmp(item->d_name, "..") != 0) {
+
+				resetColor(cTerm);
+
 				// make intedation
 				for (int i = 0 ; i < intedation ; i++) {
 					printf("  | ");
 				}
 
+				// checking if searched file
+				if (strstr(item->d_name, search) && searchEnabled) {
+					SetConsoleTextAttribute(cTerm, 0x1D);
+				}
 
 				// creating new path
 				char temp = '/';
@@ -49,7 +84,7 @@ int ls(char *dirname, DIR *directory, int intedation) {
 				if(S_ISDIR(st.st_mode)) {
 					printf("^ %s\n", item->d_name);
 					// recursive call
-					dirsize += ls(newpath, directory, intedation + 1);
+					dirsize += ls(newpath, directory, intedation + 1, search, searchEnabled, cTerm);
 				} else {
 					dirsize += st.st_size;
 
@@ -57,6 +92,8 @@ int ls(char *dirname, DIR *directory, int intedation) {
 					normalize(st.st_size);
 					printf("%s\n", item->d_name);
 				}
+
+				resetColor(cTerm);
 			}
 		}
 		
@@ -74,11 +111,44 @@ int ls(char *dirname, DIR *directory, int intedation) {
 }
 
 
-int main () {
+int main (int argc, char *argv[]) {
+	
+	bool searchEnabled = false;
+	char *search = calloc(2, sizeof(char));
+
+	if (argc > 2) {
+		printf("Too many arguments passed !");
+
+		return 1;
+	} 
+	// arguments passed
+	if (argc > 1) {
+		char flag[2];
+		substring(argv[1], flag, 0, 2);
+
+		if (strcmp(flag, "-S") == 0 || strcmp(flag, "-s") == 0) {
+			searchEnabled = true;
+			char *temp = realloc(search, (strlen(argv[1]) - 2) * sizeof(char));
+			if (temp != NULL) {
+				search = temp;
+			}
+			substring(argv[1], search, 2, 512);
+		} else {
+			printf("unknown flag: %s", flag);
+			return 1;
+		}
+	}
+
+
+	HANDLE cTerm = GetStdHandle(STD_OUTPUT_HANDLE);
+	
 	DIR *directory;
 	
 	printf(".\n");
-	ls(".", directory, 0);
+	ls(".", directory, 0, search, searchEnabled, cTerm);
 
+
+	free(search);
+	resetColor(cTerm);
 	return 0;
 }
