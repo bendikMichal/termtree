@@ -35,17 +35,29 @@ void resetColor(HANDLE cTerm) {
 }
 //
 
-void normalize(int bytes) {
+int normalize(int bytes) {
+	char buf[64] = "";
 	if (bytes >= pow(10, 12)) {
-		printf("[ %.1f tb ] ", bytes / pow(10, 12));
+
+		sprintf(buf, "[ %.1f tb ] ", bytes / pow(10, 12));
+		printf("%s", buf);
+		return strlen(buf);
 	} else if (bytes >= pow(10, 9)) {
-		printf("[ %.1f gb ] ", bytes / pow(10, 9));
+		sprintf(buf, "[ %.1f gb ] ", bytes / pow(10, 9));
+		printf("%s", buf);
+		return strlen(buf);
 	} else if (bytes >= pow(10, 6)) {
-		printf("[ %.1f mb ] ", bytes / pow(10, 6));
+		sprintf(buf, "[ %.1f mb ] ", bytes / pow(10, 6));
+		printf("%s", buf);
+		return strlen(buf);
 	} else if (bytes >= pow(10, 3)) {
-		printf("[ %.1f kb ] ", bytes / pow(10, 3));
+		sprintf(buf, "[ %.1f kb ] ", bytes / pow(10, 3));
+		printf("%s", buf);
+		return strlen(buf);
 	} else if (bytes < pow(10, 3)) {
-		printf("[ %d b ] ", bytes);
+		sprintf(buf, "[ %d b ] ", bytes);
+		printf("%s", buf);
+		return strlen(buf);
 	} 
 }
 
@@ -98,7 +110,10 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 
 					// print name
 					if (intedation + 1 < maxIntendation) {
-						normalize(st.st_size);
+						int tempLen = normalize(st.st_size);
+						for (int i = 0 ; i < 12 - tempLen ; i++) {
+							printf(" ");
+						}
 						printf("%s\n", item->d_name);
 					}
 				}
