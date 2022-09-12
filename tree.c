@@ -25,6 +25,28 @@ void resetColor(HANDLE cTerm) {
 }
 //
 
+bool findInFile (char *filename, char *item) {
+	FILE *file;
+	fopen_s(&file, filename, "r");
+	
+	if (file == NULL) {
+		fclose(file);
+		return false;
+	}
+
+	char line[2048];
+	bool found = false;
+	while(fgets(line, sizeof(line), file)) {
+		if (strstr(line, item)) {
+			fclose(file);
+			return true;
+		}
+	}
+
+	fclose(file);
+	return false;
+}
+
 int normalize(int bytes) {
 	char buf[64] = "";
 	if (bytes >= pow(10, 12)) {
@@ -50,7 +72,7 @@ int normalize(int bytes) {
 	} 
 }
 
-int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *search, bool searchEnabled, HANDLE cTerm) {
+int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, HANDLE cTerm) {
 	struct dirent *item;
 	directory = opendir(dirname);
 	struct stat st;
@@ -92,10 +114,18 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 						printf("^ %s\n", item->d_name);
 					}
 					// recursive call
-					dirsize += ls(newpath, directory, intedation + 1, maxIntendation, search, searchEnabled, cTerm);
+					dirsize += ls(newpath, directory, intedation + 1, maxIntendation, search, searchEnabled, fileSearch, fileSearchEnabled, cTerm);
 
 				} else {
 					dirsize += st.st_size;
+
+					bool found = false;
+					if (fileSearchEnabled) {
+						found = findInFile(newpath, fileSearch);
+					}
+					if (found) {
+						SetConsoleTextAttribute(cTerm, 0x1D);
+					}
 
 					// print name
 					if (intedation + 1 < maxIntendation) {
@@ -143,6 +173,9 @@ int main (int argc, char *argv[]) {
 	
 	bool searchEnabled = false;
 	char *search = calloc(2, sizeof(char));
+	
+	bool fileSearchEnabled = true;
+	char *fileSearch = "return";//calloc(2, sizeof(char));
 
 	if (argc > 3) {
 		printf("Too many arguments passed !");
@@ -187,7 +220,7 @@ int main (int argc, char *argv[]) {
 	DIR *directory;
 	
 	printf(".\n");
-	ls(".", directory, 0, maxIntendation, search, searchEnabled, cTerm);
+	ls(".", directory, 0, maxIntendation, search, searchEnabled, fileSearch, fileSearchEnabled, cTerm);
 
 
 	free(search);
