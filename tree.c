@@ -72,7 +72,7 @@ int normalize(int bytes) {
 	} 
 }
 
-int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, HANDLE cTerm) {
+int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType, HANDLE cTerm) {
 	struct dirent *item;
 	directory = opendir(dirname);
 	struct stat st;
@@ -107,6 +107,9 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 
 				// check if is folder
 				stat(newpath, &st);
+				// file type
+				char cFileType[64] = "";
+				substring(item->d_name, cFileType, findChar(item->d_name, '.') + 1, 512);
 			
 
 				if(S_ISDIR(st.st_mode) ) {
@@ -114,13 +117,13 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 						printf("^ %s\n", item->d_name);
 					}
 					// recursive call
-					dirsize += ls(newpath, directory, intedation + 1, maxIntendation, search, searchEnabled, fileSearch, fileSearchEnabled, cTerm);
+					dirsize += ls(newpath, directory, intedation + 1, maxIntendation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
 
 				} else {
 					dirsize += st.st_size;
 
 					bool found = false;
-					if (fileSearchEnabled) {
+					if (fileSearchEnabled && (strcmp(fileType, cFileType) == 0 || strcmp(fileType, "") == 0)) {
 						found = findInFile(newpath, fileSearch);
 					}
 					if (found) {
@@ -175,7 +178,8 @@ int main (int argc, char *argv[]) {
 	char *search = calloc(2, sizeof(char));
 	
 	bool fileSearchEnabled = true;
-	char *fileSearch = "return";//calloc(2, sizeof(char));
+	char *fileSearch = calloc(2, sizeof(char));
+	char *fileType = calloc(2, sizeof(char));
 
 	if (argc > 3) {
 		printf("Too many arguments passed !");
@@ -206,7 +210,28 @@ int main (int argc, char *argv[]) {
 					maxIntendation = 2;
 				}
 
-			}else {
+			} else if (strcmp(flag, "-F") == 0 || strcmp(flag, "-f") == 0) {
+				if (findChar(argv[i], '/') == 0) {
+					printf("Missing search item !");
+					return 1;
+				}
+
+				fileSearchEnabled = true;
+				char *temp = realloc(fileSearch, (strlen(argv[i]) - 2) * sizeof(char));
+				if (temp != NULL) {
+					fileSearch = temp;
+				}
+
+
+				substring(argv[i], fileSearch, 2, findChar(argv[i], '/'));
+				
+				char *tempT = realloc(fileType, (strlen(argv[i]) - findChar(argv[i], '/') + 1) * sizeof(char));
+				if (tempT != NULL) {
+					fileType = tempT;
+				}
+				substring(argv[i], fileType, findChar(argv[i], '/') + 1, 512);
+
+			} else {
 				printf("unknown flag: %s", flag);
 				return 1;
 			}
@@ -220,10 +245,12 @@ int main (int argc, char *argv[]) {
 	DIR *directory;
 	
 	printf(".\n");
-	ls(".", directory, 0, maxIntendation, search, searchEnabled, fileSearch, fileSearchEnabled, cTerm);
+	ls(".", directory, 0, maxIntendation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
 
 
 	free(search);
+	free(fileSearch);
+	free(fileType);
 	resetColor(cTerm);
 	return 0;
 }
