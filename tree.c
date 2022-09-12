@@ -12,16 +12,6 @@
 // use to build : gcc -o ttree tree.c libs/stringex.c
 
 // coloring
-void setColor(HANDLE cTerm, char *color) {
-	if (color == "greenBg"){
-		SetConsoleTextAttribute(cTerm, 0x20);
-	}else if (color == "green") {
-		SetConsoleTextAttribute(cTerm, 0x0a);
-	}else if (color == "brown") {
-		SetConsoleTextAttribute(cTerm, 0x06);
-	}
-}
-
 void allColors(HANDLE cTerm) {
 	for (int i = 0 ; i < 256; i++) {
 		SetConsoleTextAttribute(cTerm, i);
@@ -38,24 +28,23 @@ void resetColor(HANDLE cTerm) {
 int normalize(int bytes) {
 	char buf[64] = "";
 	if (bytes >= pow(10, 12)) {
-
-		sprintf(buf, "[ %.1f tb ] ", bytes / pow(10, 12));
+		sprintf(buf, "[ %.1f tb ", bytes / pow(10, 12));
 		printf("%s", buf);
 		return strlen(buf);
 	} else if (bytes >= pow(10, 9)) {
-		sprintf(buf, "[ %.1f gb ] ", bytes / pow(10, 9));
+		sprintf(buf, "[ %.1f gb ", bytes / pow(10, 9));
 		printf("%s", buf);
 		return strlen(buf);
 	} else if (bytes >= pow(10, 6)) {
-		sprintf(buf, "[ %.1f mb ] ", bytes / pow(10, 6));
+		sprintf(buf, "[ %.1f mb ", bytes / pow(10, 6));
 		printf("%s", buf);
 		return strlen(buf);
 	} else if (bytes >= pow(10, 3)) {
-		sprintf(buf, "[ %.1f kb ] ", bytes / pow(10, 3));
+		sprintf(buf, "[ %.1f kb ", bytes / pow(10, 3));
 		printf("%s", buf);
 		return strlen(buf);
 	} else if (bytes < pow(10, 3)) {
-		sprintf(buf, "[ %d b ] ", bytes);
+		sprintf(buf, "[ %d b  ", bytes);
 		printf("%s", buf);
 		return strlen(buf);
 	} 
@@ -111,7 +100,13 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 					// print name
 					if (intedation + 1 < maxIntendation) {
 						int tempLen = normalize(st.st_size);
-						for (int i = 0 ; i < 12 - tempLen ; i++) {
+
+						for (int i = 0 ; i < 10 - tempLen ; i++) {
+							printf(" ");
+						}
+						printf("]");
+						
+						for (int i = 0 ; i < 10 - tempLen ; i++) {
 							printf(" ");
 						}
 						printf("%s\n", item->d_name);
@@ -126,10 +121,16 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 				printf("  | ");
 			}
 			printf("  |_");
-			normalize(dirsize);
+			
+			int tempLen = normalize(dirsize);
+			for (int i = 0 ; i < 10 - tempLen ; i++) {
+				printf(" ");
+			}
+			printf("]");
+
 			printf("\n");
 		}
-		
+
 		closedir(directory);
 	}
 
