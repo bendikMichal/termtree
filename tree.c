@@ -177,7 +177,7 @@ int main (int argc, char *argv[]) {
 	bool searchEnabled = false;
 	char *search = calloc(2, sizeof(char));
 	
-	bool fileSearchEnabled = true;
+	bool fileSearchEnabled = false;
 	char *fileSearch = calloc(2, sizeof(char));
 	char *fileType = calloc(2, sizeof(char));
 
