@@ -93,9 +93,9 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 					}
 				}
 
-				// checking if searched file
+				// checking if searched file name
 				if (strstr(item->d_name, search) && searchEnabled) {
-					SetConsoleTextAttribute(cTerm, 0x1D);
+					SetConsoleTextAttribute(cTerm, 0xF0);
 				}
 
 				// creating new path
@@ -127,7 +127,7 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 						found = findInFile(newpath, fileSearch);
 					}
 					if (found) {
-						SetConsoleTextAttribute(cTerm, 0x1D);
+						SetConsoleTextAttribute(cTerm, 0xF0);
 					}
 
 					// print name
