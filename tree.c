@@ -204,7 +204,7 @@ int main (int argc, char *argv[]) {
 				char temp[64] = "";
 				
 				substring(argv[i], temp, 2, 512);
-				maxIntendation = atoi(temp);
+				maxIntendation = atoi(temp) + 1;
 
 				if (maxIntendation < 2) {
 					maxIntendation = 2;
@@ -212,7 +212,7 @@ int main (int argc, char *argv[]) {
 
 			} else if (strcmp(flag, "-F") == 0 || strcmp(flag, "-f") == 0) {
 				if (findChar(argv[i], '/') == 0) {
-					printf("Missing search item !");
+					printf("Missing \"/\"");
 					return 1;
 				}
 
@@ -224,6 +224,10 @@ int main (int argc, char *argv[]) {
 
 
 				substring(argv[i], fileSearch, 2, findChar(argv[i], '/'));
+				if (strlen(fileSearch) <= 0) {
+					printf("Missing search item !");
+					return 1;
+				}
 				
 				char *tempT = realloc(fileType, (strlen(argv[i]) - findChar(argv[i], '/') + 1) * sizeof(char));
 				if (tempT != NULL) {
