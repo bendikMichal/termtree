@@ -178,7 +178,9 @@ int main (int argc, char *argv[]) {
 	char *fileSearch = calloc(2, sizeof(char));
 	char *fileType = calloc(2, sizeof(char));
 
-	if (argc > 4) {
+	bool wait = false;
+
+	if (argc > 5) {
 		printf("Too many arguments passed !");
 
 		return 1;
@@ -232,6 +234,8 @@ int main (int argc, char *argv[]) {
 				}
 				substring(argv[i], fileType, findChar(argv[i], '/') + 1, 512);
 
+			} else if (strcmp(flag, "-L") == 0 || strcmp(flag, "-l") == 0) {
+				wait = true;
 			} else {
 				printf("unknown flag: %s", flag);
 				return 1;
@@ -248,6 +252,10 @@ int main (int argc, char *argv[]) {
 	printf(".\n");
 	ls(".", directory, 0, maxIntendation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
 
+	if (wait) {
+		char tempC;
+		scanf("%c", &tempC);
+	}
 
 	free(search);
 	free(fileSearch);
