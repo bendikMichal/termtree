@@ -137,11 +137,8 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 						for (int i = 0 ; i < 10 - tempLen ; i++) {
 							printf(" ");
 						}
-						printf("]");
+						printf("] ");
 						
-						for (int i = 0 ; i < 10 - tempLen ; i++) {
-							printf(" ");
-						}
 						printf("%s\n", item->d_name);
 					}
 				}
