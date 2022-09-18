@@ -35,4 +35,4 @@ gcc -o ttree tree.c libs/stringex.c libs/argLib.c
 ![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree03.PNG)
 
 
-Tested on windows
+Tested on windows 10, 11
