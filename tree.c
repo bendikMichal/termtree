@@ -7,9 +7,10 @@
 #include <sys/stat.h>
 #include <windows.h>
 
+#include "libs/argLib.h"
 #include "libs/stringEx.h"
 
-// use to build : gcc -o ttree tree.c libs/stringex.c
+// use to build : gcc -o ttree tree.c libs/stringex.c libs/argLib.c
 
 // coloring
 void allColors(HANDLE cTerm) {
@@ -72,7 +73,7 @@ int normalize(int bytes) {
 	} 
 }
 
-int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType, HANDLE cTerm) {
+int ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType, HANDLE cTerm) {
 	struct dirent *item;
 	directory = opendir(dirname);
 	struct stat st;
@@ -85,10 +86,9 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 
 				resetColor(cTerm);
 
-				// make intedation
-
-				if (intedation + 1 < maxIntendation) {
-					for (int i = 0 ; i < intedation ; i++) {
+				// make indentation
+				if (indentation + 1 < maxIndentation) {
+					for (int i = 0 ; i < indentation ; i++) {
 						printf("  | ");
 					}
 				}
@@ -105,19 +105,18 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 				strncat(newpath, &temp, 1);
 				strcat(newpath, item->d_name);
 
-				// check if is folder
-				stat(newpath, &st);
 				// file type
+				stat(newpath, &st);
 				char cFileType[64] = "";
 				substring(item->d_name, cFileType, findChar(item->d_name, '.') + 1, 512);
 			
-
+				// check if is folder
 				if(S_ISDIR(st.st_mode) ) {
-					if (intedation + 1 < maxIntendation) {
+					if (indentation + 1 < maxIndentation) {
 						printf("^ %s\n", item->d_name);
 					}
 					// recursive call
-					dirsize += ls(newpath, directory, intedation + 1, maxIntendation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
+					dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
 
 				} else {
 					dirsize += st.st_size;
@@ -131,7 +130,7 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 					}
 
 					// print name
-					if (intedation + 1 < maxIntendation) {
+					if (indentation + 1 < maxIndentation) {
 						int tempLen = normalize(st.st_size);
 
 						for (int i = 0 ; i < 10 - tempLen ; i++) {
@@ -146,8 +145,8 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 			}
 		}
 		
-		if (intedation + 1 < maxIntendation) {
-			for (int i = 0 ; i < intedation - 1 ; i++) {
+		if (indentation + 1 < maxIndentation) {
+			for (int i = 0 ; i < indentation - 1 ; i++) {
 				printf("  | ");
 			}
 			printf("  |_");
@@ -169,7 +168,7 @@ int ls(char *dirname, DIR *directory, int intedation, int maxIntendation, char *
 
 
 int main (int argc, char *argv[]) {
-	int maxIntendation = 99;
+	int maxIndentation = 99;
 	
 	bool searchEnabled = false;
 	char *search = calloc(2, sizeof(char));
@@ -193,46 +192,17 @@ int main (int argc, char *argv[]) {
 
 			if (strcmp(flag, "-S") == 0 || strcmp(flag, "-s") == 0) {
 				searchEnabled = true;
-				char *temp = realloc(search, (strlen(argv[i]) - 2) * sizeof(char));
-				if (temp != NULL) {
-					search = temp;
-				}
-				substring(argv[i], search, 2, 512);
+				setSearch(argv[i], search);
 
 			} else if (strcmp(flag, "-I") == 0 || strcmp(flag, "-i") == 0) {
-				char temp[64] = "";
-				
-				substring(argv[i], temp, 2, 512);
-				maxIntendation = atoi(temp) + 1;
-
-				if (maxIntendation < 2) {
-					maxIntendation = 2;
-				}
+				maxIndentation = setIndentation(argv[i]);  
 
 			} else if (strcmp(flag, "-F") == 0 || strcmp(flag, "-f") == 0) {
-				if (findChar(argv[i], '/') == 0) {
-					printf("Missing \"/\"");
-					return 1;
-				}
-
 				fileSearchEnabled = true;
-				char *temp = realloc(fileSearch, (strlen(argv[i]) - 2) * sizeof(char));
-				if (temp != NULL) {
-					fileSearch = temp;
-				}
-
-
-				substring(argv[i], fileSearch, 2, findChar(argv[i], '/'));
-				if (strlen(fileSearch) <= 0) {
-					printf("Missing search item !");
+				int res = setFileSearch(argv[i], fileSearch, fileType);
+				if (res == 1) {
 					return 1;
 				}
-				
-				char *tempT = realloc(fileType, (strlen(argv[i]) - findChar(argv[i], '/') + 1) * sizeof(char));
-				if (tempT != NULL) {
-					fileType = tempT;
-				}
-				substring(argv[i], fileType, findChar(argv[i], '/') + 1, 512);
 
 			} else if (strcmp(flag, "-L") == 0 || strcmp(flag, "-l") == 0) {
 				wait = true;
@@ -250,7 +220,7 @@ int main (int argc, char *argv[]) {
 	DIR *directory;
 	
 	printf(".\n");
-	ls(".", directory, 0, maxIntendation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
+	ls(".", directory, 0, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
 
 	if (wait) {
 		char tempC;
