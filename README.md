@@ -6,7 +6,7 @@ Made in c I suppose.
 ## Installation
 * build with 
 ```
-gcc -o ttree tree.c libs/stringex.c
+gcc -o ttree tree.c libs/stringex.c libs/argLib.c
 ```
 * can add to path and run with "ttree"
 
