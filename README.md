@@ -1,5 +1,5 @@
 # TermTree
-Tree file and folder view for terminal.
+Tree file and folder view for windows.
 
 Made in c I suppose. 
 
