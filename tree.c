@@ -168,6 +168,18 @@ int ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char 
 
 
 int main (int argc, char *argv[]) {
+
+
+	char *helpString = 
+		"Help for TermTree \n"
+		"\t -h \n\t\t-shows help\n"
+		"\t -ftext_to_find/file_type(leave empty for all file types) \n\t\t-search in file \n"
+		"\t -sfilename \n\t\t-search for specific filename\n"
+		"\t -i<number> \n\t\t-replace <number> with a whole number specifing how deep into the folders hould the seach go\n"
+		"\t -L \n\t\t-wait for a keypress to close the program\n";
+
+
+
 	int maxIndentation = 99;
 	
 	bool searchEnabled = false;
@@ -206,6 +218,9 @@ int main (int argc, char *argv[]) {
 
 			} else if (strcmp(flag, "-L") == 0 || strcmp(flag, "-l") == 0) {
 				wait = true;
+			} else if (strcmp(flag, "-H") == 0 || strcmp(flag, "-h") == 0) {
+				printf("%s", helpString);
+				return 0;
 			} else {
 				printf("unknown flag: %s", flag);
 				return 1;
