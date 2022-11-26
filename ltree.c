@@ -137,7 +137,7 @@ int ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char 
 		}
 	}
 	
-	if (indentation + 1 < maxIndentation) {
+	if (indentation < maxIndentation) {
 		for (int i = 0 ; i < indentation - 1 ; i++) {
 			printf("  | ");
 		}
