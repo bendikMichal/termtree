@@ -3,12 +3,20 @@ Tree file and folder view for windows.
 
 Made in c I suppose. 
 
-## Installation
-* build with 
+## Installation /  How to build 
+
+
+#### WINDOWS
 ```
 gcc -o ttree tree.c libs/stringex.c libs/argLib.c
 ```
 * can add to path and run with "ttree"
+
+
+#### LINUX
+```
+gcc -o ttree ltree.c libs/stringex.c libs/argLib.c
+```
 
 ## Features
 * ### file / folder sizes
@@ -35,4 +43,9 @@ gcc -o ttree tree.c libs/stringex.c libs/argLib.c
 ![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree03.PNG)
 
 
-Tested on windows 10, 11
+Tested on:
+
+windows 10, 11
+
+archlinux
+
