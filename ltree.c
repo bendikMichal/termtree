@@ -70,121 +70,46 @@ int ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char 
 	struct stat st;
 
 	
-	int currentFile = 0;
-	int maxFiles = 2;
-	struct dirent *files = calloc(maxFiles, sizeof(struct dirent));
 	
 	while ((item = readdir(directory)) != NULL) {
 		if (strcmp(item->d_name, ".") != 0 && strcmp(item->d_name, "..") != 0) {
-			if (currentFile >= maxFiles) {
-				int tempMaxFiles = maxFiles * 2;
-				struct dirent *temp = realloc(files, tempMaxFiles * sizeof(struct dirent));
-				if (temp != NULL) {
-					files = temp;
-					maxFiles = tempMaxFiles;
-				}
-			}
-
-			files[currentFile] = *item;
-			currentFile ++;
-		}
-	}
-
-
-	// sorting folders/file
-	/* for (int i = 0 ; i < currentFile ; i++) { */
-	/* 	for (int j = i + 1 ; j <= currentFile ; j++) { */
-	/* 		if (files[j].d_name[0] < files[i].d_name[0] && files[j].d_type == files[i].d_type) { */
-	/* 			struct dirent tempFile = files[i]; */
-	/* 			files[i] = files[j]; */
-	/* 			files[j] = tempFile; */
-	/* 		} */ 
-	/* 		else if (strlen(files[j].d_name) < strlen(files[i].d_name) && files[j].d_name[0] == files[i].d_name[0]) { */
-	/* 			struct dirent tempFile = files[i]; */
-	/* 			files[i] = files[j]; */
-	/* 			files[j] = tempFile; */
-	/* 		} */
-	/* 	} */
-	/* } */
-	
-	// recursive into folders 
-	for (int i = 0 ; i <= currentFile ; i++) {
-		if (files[i].d_type == DT_DIR) {
 			
+			printf(CNORM);
+
+			// make indentation
 			if (indentation + 1 < maxIndentation) {
-				
 				for (int i = 0 ; i < indentation ; i++) {
-					printf("%s", spacetab);
+					printf("  | ");
 				}
-
-				// search filename
-				if (strstr(files[i].d_name, search) && searchEnabled) {
-					printf(CBLACK);
-				}
-
-				// print name and reset term color
-				printf("%s \n", files[i].d_name);
-				printf(CNORM);
 			}
-			
+
+			// checking if searched file name
+			if (strstr(item->d_name, search) && searchEnabled) {
+				printf(CBLACK);
+			}
+
 			// creating new path
 			char temp = '/';
 			char newpath[512];
 			strcpy(newpath, dirname);
 			strncat(newpath, &temp, 1);
-			strcat(newpath, files[i].d_name);
+			strcat(newpath, item->d_name);
 
-
-			dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType);
-			if (indentation + 1 < maxIndentation) {
-				for (int i = 0 ; i < indentation ; i++) {
-					printf("%s", spacetab);
-				}
-
-				printf(" |__");
-				normalize(dirsize);
-				printf("]\n");
-			}
-		}
-	}
-
-	// printing files 
-	for (int i = 0 ; i <= currentFile ; i++) {
-		if (files[i].d_type == DT_REG) {
-			// creating new path
-			char temp = '/';
-			char newpath[512];
-			strcpy(newpath, dirname);
-			strncat(newpath, &temp, 1);
-			strcat(newpath, files[i].d_name);
-
-			// counting size
+			// file type
 			stat(newpath, &st);
-			dirsize += st.st_size;
+			char cFileType[64] = "";
+			substring(item->d_name, cFileType, findChar(item->d_name, '.') + 1, 512);
+		
+			// check if is folder
+			if(item->d_type == DT_DIR) {
+				if (indentation + 1 < maxIndentation) {
+					printf("^ %s\n", item->d_name);
+				}
+				// recursive call
+				dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType);
 
-			// printing
-			if (indentation + 1 < maxIndentation) {
-				// printing indentation
-				for (int i = 0 ; i < indentation ; i++) {
-					printf("%s", spacetab);
-				}
-
-				int tempLen = normalize(st.st_size);
-				for (int i = 0 ; i < 10 - tempLen ; i++) {
-					printf(" ");
-				}
-				printf("] ");
-				
-				// search filename
-				if (strstr(files[i].d_name, search) && searchEnabled) {
-					printf(CBLACK);
-				}
-				
-				
-				// file type
-				stat(newpath, &st);
-				char cFileType[64] = "";
-				substring(files[i].d_name, cFileType, findChar(files[i].d_name, '.') + 1, 512);
+			} else {
+				dirsize += st.st_size;
 
 				// search in files
 				bool found = false;
@@ -195,17 +120,42 @@ int ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char 
 					printf(CBLACK);
 				}
 
-				// print name and reset color
-				printf("%s \n", files[i].d_name);
-				printf(CNORM);
 
+				// print name
+				if (indentation + 1 < maxIndentation) {
+					int tempLen = normalize(st.st_size);
+
+					for (int i = 0 ; i < 10 - tempLen ; i++) {
+						printf(" ");
+					}
+					printf("] ");
+					
+					printf("%s\n", item->d_name);
+				}
 			}
+			printf(CNORM);
 		}
 	}
+	
+	if (indentation + 1 < maxIndentation) {
+		for (int i = 0 ; i < indentation - 1 ; i++) {
+			printf("  | ");
+		}
+		printf("  |_");
+		
+		int tempLen = normalize(dirsize);
+		for (int i = 0 ; i < 10 - tempLen ; i++) {
+			printf(" ");
+		}
+		printf("]");
 
-	free(files);
+		printf("\n");
+	}
+
+	closedir(directory);
 
 	return dirsize;
+
 }
 
 
