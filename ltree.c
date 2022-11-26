@@ -91,31 +91,26 @@ int ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char 
 	}
 
 
-	// sorting folders
-	for (int i = 0 ; i <= currentFile ; i++) {
-		for (int j = i + 1 ; j <= currentFile ; j++) {
-			if (files[j].d_name[0] < files[i].d_name[0] && files[j].d_type == files[i].d_type) {
-				struct dirent tempFile = files[i];
-				files[i] = files[j];
-				files[j] = tempFile;
-			} else if (strlen(files[j].d_name) < strlen(files[i].d_name) && files[j].d_name[0] == files[i].d_name[0]) {
-				struct dirent tempFile = files[i];
-				files[i] = files[j];
-				files[j] = tempFile;
-			}
-		}
-	}
+	// sorting folders/file
+	/* for (int i = 0 ; i < currentFile ; i++) { */
+	/* 	for (int j = i + 1 ; j <= currentFile ; j++) { */
+	/* 		if (files[j].d_name[0] < files[i].d_name[0] && files[j].d_type == files[i].d_type) { */
+	/* 			struct dirent tempFile = files[i]; */
+	/* 			files[i] = files[j]; */
+	/* 			files[j] = tempFile; */
+	/* 		} */ 
+	/* 		else if (strlen(files[j].d_name) < strlen(files[i].d_name) && files[j].d_name[0] == files[i].d_name[0]) { */
+	/* 			struct dirent tempFile = files[i]; */
+	/* 			files[i] = files[j]; */
+	/* 			files[j] = tempFile; */
+	/* 		} */
+	/* 	} */
+	/* } */
 	
 	// recursive into folders 
 	for (int i = 0 ; i <= currentFile ; i++) {
 		if (files[i].d_type == DT_DIR) {
-			// creating new path
-			char temp = '/';
-			char newpath[512];
-			strcpy(newpath, dirname);
-			strncat(newpath, &temp, 1);
-			strcat(newpath, files[i].d_name);
-
+			
 			if (indentation + 1 < maxIndentation) {
 				
 				for (int i = 0 ; i < indentation ; i++) {
@@ -131,6 +126,13 @@ int ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char 
 				printf("%s \n", files[i].d_name);
 				printf(CNORM);
 			}
+			
+			// creating new path
+			char temp = '/';
+			char newpath[512];
+			strcpy(newpath, dirname);
+			strncat(newpath, &temp, 1);
+			strcat(newpath, files[i].d_name);
 
 
 			dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType);

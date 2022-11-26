@@ -43,7 +43,7 @@ gcc -o ttree ltree.c libs/stringex.c libs/argLib.c
 ![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree03.PNG)
 
 
-Tested on:
+Ran on:
 
 windows 10, 11
 
