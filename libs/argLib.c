@@ -27,7 +27,7 @@ int setIndentation(char *argv) {
 
 int setFileSearch(char *argv, char *fileSearch, char *fileType) {
 	if (findChar(argv, '/') == 0) {
-		printf("Missing \"/\"");
+		printf("Missing \"/\" \n");
 		return 1;
 	}
 

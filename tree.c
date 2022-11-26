@@ -36,7 +36,6 @@ bool findInFile (char *filename, char *item) {
 	}
 
 	char line[2048];
-	bool found = false;
 	while(fgets(line, sizeof(line), file)) {
 		if (strstr(line, item)) {
 			fclose(file);
@@ -121,6 +120,7 @@ int ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char 
 				} else {
 					dirsize += st.st_size;
 
+					// search in files
 					bool found = false;
 					if (fileSearchEnabled && (strcmp(fileType, cFileType) == 0 || strcmp(fileType, "") == 0)) {
 						found = findInFile(newpath, fileSearch);
