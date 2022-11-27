@@ -47,8 +47,8 @@ bool findInFile (char *filename, char *item) {
 	return false;
 }
 
-int normalize(int bytes) {
-	char buf[64] = "";
+int normalize(long long bytes) {
+	char buf[128] = "";
 	if (bytes >= pow(10, 12)) {
 		sprintf(buf, "[ %.1f tb ", bytes / pow(10, 12));
 		printf("%s", buf);
@@ -72,12 +72,12 @@ int normalize(int bytes) {
 	} 
 }
 
-int ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType, HANDLE cTerm) {
+long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType, HANDLE cTerm) {
 	struct dirent *item;
 	directory = opendir(dirname);
 	struct stat st;
 
-	int dirsize = 0;
+	long long dirsize = 0;
 	
 	if (directory) {
 		while ((item = readdir(directory)) != NULL) {
@@ -118,7 +118,7 @@ int ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char 
 					dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
 
 				} else {
-					dirsize += st.st_size;
+					dirsize += (long long)(unsigned long)st.st_size;
 
 					// search in files
 					bool found = false;
@@ -131,7 +131,7 @@ int ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char 
 
 					// print name
 					if (indentation + 1 < maxIndentation) {
-						int tempLen = normalize(st.st_size);
+						int tempLen = normalize((long long)(unsigned long)st.st_size);
 
 						for (int i = 0 ; i < 10 - tempLen ; i++) {
 							printf(" ");
@@ -145,7 +145,7 @@ int ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char 
 			}
 		}
 		
-		if (indentation + 1 < maxIndentation) {
+		if (indentation < maxIndentation) {
 			for (int i = 0 ; i < indentation - 1 ; i++) {
 				printf("  | ");
 			}
