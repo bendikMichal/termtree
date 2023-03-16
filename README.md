@@ -10,8 +10,8 @@ Made in c I suppose.
 ```
 gcc -o ttree tree.c libs/stringex.c libs/argLib.c
 ```
-* can add to path and run with "ttree"
-
+* can add to path and run with eg. "ttree"
+(or just rename it to tee for shorter name)
 
 #### LINUX
 ```
