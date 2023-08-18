@@ -5,6 +5,11 @@ Made in c I suppose.
 
 ## Installation /  How to build 
 
+### NEW - using make
+* build files will be located in `./build` directory
+```
+make
+```
 
 #### WINDOWS
 ```
