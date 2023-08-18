@@ -98,7 +98,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 			// file type
 			stat(newpath, &st);
-			char cFileType[64] = "";
+			char cFileType[63] = "";
 			substring(item->d_name, cFileType, findChar(item->d_name, '.') + 1, 512);
 		
 			// check if is folder
@@ -126,7 +126,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 				if (indentation + 1 < maxIndentation) {
 					int tempLen = normalize((long long)(unsigned long)st.st_size);
 
-					for (int i = 0 ; i < 10 - tempLen ; i++) {
+					for (int i = 0 ; i < 12 - tempLen ; i++) {
 						printf(" ");
 					}
 					printf("] ");
@@ -145,7 +145,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 		printf("  |_");
 		
 		int tempLen = normalize(dirsize);
-		for (int i = 0 ; i < 10 - tempLen ; i++) {
+		for (int i = 0 ; i < 12 - tempLen ; i++) {
 			printf(" ");
 		}
 		printf("]");
