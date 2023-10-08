@@ -5,22 +5,11 @@ Made in c I suppose.
 
 ## Installation /  How to build 
 
-### NEW - using make
+### using `make`
 * build files will be located in `./build` directory
+    - make sure to have internet connection when using make, otherwise the build will fail (it has to get it's dependencies from github)
 ```
 make
-```
-
-#### WINDOWS
-```
-gcc -o ttree tree.c libs/stringex.c libs/argLib.c
-```
-* can add to path and run with eg. "ttree"
-(or just rename it to tee for shorter name)
-
-#### LINUX
-```
-gcc -o ttree ltree.c libs/stringex.c libs/argLib.c
 ```
 
 ## Features
