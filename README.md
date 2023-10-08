@@ -19,7 +19,6 @@ make
 
 
 * ### infile search
-* #### flag:
 
 ```
 ttree --find <text>/<specific_file_type / empty_for_all>
