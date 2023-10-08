@@ -1,18 +1,18 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#include <stdbool.h>
-#include <dirent.h>
-#include <sys/stat.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <math.h>
+# include <string.h>
+# include <stdbool.h>
+# include <dirent.h>
+# include <sys/stat.h>
 
-#include "libs/argLib.h"
-#include "libs/stringEx.h"
+# include "libs/argLib.h"
+# include "stringEx/stringEx.h"
 
 // use to build : gcc -o ttree ltree.c libs/stringex.c libs/argLib.c
 
-#define CNORM "\x1B[00m"
-#define CBLACK "\x1B[7m"
+# define CNORM "\x1B[00m"
+# define CBLACK "\x1B[7m"
 
 
 int normalize(long long bytes) {

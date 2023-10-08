@@ -1,14 +1,14 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <math.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <windows.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <stdbool.h>
+# include <math.h>
+# include <dirent.h>
+# include <sys/stat.h>
+# include <windows.h>
 
-#include "libs/argLib.h"
-#include "libs/stringEx.h"
+# include "libs/argLib.h"
+# include "stringEx/stringEx.h"
 
 // use to build : gcc -o ttree tree.c libs/stringex.c libs/argLib.c
 
