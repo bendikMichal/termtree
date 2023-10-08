@@ -9,6 +9,7 @@
 
 # include "libs/argLib.h"
 # include "stringEx/stringEx.h"
+# include "tree.h"
 
 // use to build : gcc -o ttree tree.c libs/stringex.c libs/argLib.c
 
@@ -138,7 +139,9 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 						}
 						printf("] ");
 						
-						printf("%s\n", item->d_name);
+						printf("%s", item->d_name);
+						resetColor(cTerm);
+						printf("\n");
 					}
 				}
 				resetColor(cTerm);
@@ -157,6 +160,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 			}
 			printf("]");
 
+			resetColor(cTerm);
 			printf("\n");
 		}
 
@@ -169,14 +173,29 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 int main (int argc, char *argv[]) {
 
+	char LLabels[][MAX_LABEL_LEN] = {
+		"--help",
+		"--search",
+		"--find",
+		"--max-index",
+		"--leave-open"
 
-	char *helpString = 
+	};
+	char SLabels[][MAX_LABEL_LEN] = {
+		"-h",
+		"-s",
+		"-f",
+		"-i",
+		"-L"
+	};
+
+	char *rawHelpString = 
 		"Help for TermTree \n"
-		"\t -h \n\t\t-shows help\n"
-		"\t -ftext_to_find/file_type(leave empty for all file types) \n\t\t-search in file \n"
-		"\t -sfilename \n\t\t-search for specific filename\n"
-		"\t -i<number> \n\t\t-replace <number> with a whole number specifing how deep into the folders hould the seach go\n"
-		"\t -L \n\t\t-wait for a keypress to close the program\n";
+		"\t %s / %s \n\t\t- shows help\n"
+		"\t %s / %s <<text_to_find>/<file_type>> \n\t\t- search in file, if <file_type> is empty, search will be in all files\n"
+		"\t %s / %s <filename> \n\t\t- search for a specific filename\n"
+		"\t %s / %s <number> \n\t\t- replace <number> with a whole number specifing how deep into the folders should the seach go\n"
+		"\t %s / %s \n\t\t- wait for a keypress to close the program\n";
 
 
 
@@ -191,44 +210,67 @@ int main (int argc, char *argv[]) {
 
 	bool wait = false;
 
-	if (argc > 5) {
-		printf("Too many arguments passed !");
 
+	if (argc > 16) {
+		printf("Too many arguments passed !");
 		return 1;
 	} 
-	// arguments passed
-	if (argc > 1) {
-		for (int i = 1 ; i < argc ; i++) {
-			char flag[2] = "";
-			substring(argv[i], flag, 0, 2);
 
-			if (strcmp(flag, "-S") == 0 || strcmp(flag, "-s") == 0) {
-				searchEnabled = true;
-				setSearch(argv[i], search);
 
-			} else if (strcmp(flag, "-I") == 0 || strcmp(flag, "-i") == 0) {
-				maxIndentation = setIndentation(argv[i]);  
+	int labelCount = getLabelCount(argc, argv);
+	ARG *args = getArgs(argc, argv);
 
-			} else if (strcmp(flag, "-F") == 0 || strcmp(flag, "-f") == 0) {
-				fileSearchEnabled = true;
-				int res = setFileSearch(argv[i], fileSearch, fileType);
-				if (res == 1) {
-					return 1;
-				}
-
-			} else if (strcmp(flag, "-L") == 0 || strcmp(flag, "-l") == 0) {
-				wait = true;
-			} else if (strcmp(flag, "-H") == 0 || strcmp(flag, "-h") == 0) {
-				printf("%s", helpString);
-				return 0;
-			} else {
-				printf("unknown flag: %s", flag);
+	for (int i = 0; i < labelCount; i++) {
+		// help
+		if (strcmp(args[i].label, LLabels[0]) == 0 || strcmp(args[i].label, SLabels[0]) == 0) {
+			printf(rawHelpString, 
+					LLabels[0], SLabels[0],
+					LLabels[1], SLabels[1],
+					LLabels[2], SLabels[2],
+					LLabels[3], SLabels[3],
+					LLabels[4], SLabels[4]
+					);
+			return 0;
+		}
+		// file name search
+		else if (strcmp(args[i].label, LLabels[1]) == 0 || strcmp(args[i].label, SLabels[1]) == 0) {
+			if (args[i].value == NULL) {
+				printf("Missing value for search \n");
 				return 1;
 			}
-			
+			searchEnabled = true;
+			setSearch(args[i].value, search);
+		}
+		// in-file search
+		else if (strcmp(args[i].label, LLabels[2]) == 0 || strcmp(args[i].label, SLabels[2]) == 0) {
+			if (args[i].value == NULL) {
+				printf("Missing value for in-file search \n");
+				return 1;
+			}
+			fileSearchEnabled = true;
+			int res = setFileSearch(args[i].value, fileSearch, fileType);
+			if (res == 1) {
+				printf("Failed to set in-file search \n");
+				return 1;
+			}
+		}
+		// max-indentation also known as max index
+		else if (strcmp(args[i].label, LLabels[3]) == 0 || strcmp(args[i].label, SLabels[3]) == 0) {
+			if (args[i].value == NULL) {
+				printf("Missing value for max index/indentation \n");
+				return 1;
+			}
+			maxIndentation = setIndentation(args[i].value);  
+		}
+		// leave open after finish = aka wait for user input to close
+		else if (strcmp(args[i].label, LLabels[4]) == 0 || strcmp(args[i].label, SLabels[4]) == 0) {
+			wait = true;
+		}
+		else {
+			printf("Unknown flag: %s \n", args[i].label);
+			return 1;
 		}
 	}
-
 
 	HANDLE cTerm = GetStdHandle(STD_OUTPUT_HANDLE);
 	
@@ -242,6 +284,7 @@ int main (int argc, char *argv[]) {
 		scanf("%c", &tempC);
 	}
 
+	free(args);
 	free(search);
 	free(fileSearch);
 	free(fileType);

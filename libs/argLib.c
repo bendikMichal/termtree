@@ -1,27 +1,53 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
 
-#include "stringEx.h"
+# include "argLib.h"
+# include "../stringEx/stringEx.h"
+
+// don't forget to free returned value
+ARG* getArgs(int argc, char *argv[]) {
+	ARG *args = (ARG *) calloc(16, sizeof(ARG));
+	int nlabel = -1;
+	for (int i = 1; i < argc; i++) {
+		if (argv[i][0] == '-' || (argv[i][0] == '-' && argv[i][1] == '-')) {
+			nlabel ++;
+			args[nlabel].label = argv[i];
+			args[nlabel].value = NULL;
+		} else {
+			args[nlabel].value = argv[i];
+		}
+	}
+	return args;
+}
+
+// returns count of labels
+int getLabelCount(int argc, char *argv[]) {
+	int nlabel = 0;
+	char pre[2];
+	for (int i = 1; i < argc; i++) {
+		if (argv[i][0] == '-' || (argv[i][0] == '-' && argv[i][1] == '-')) {
+			nlabel ++;
+		}
+	}
+	return nlabel;
+}
 
 void setSearch(char *argv, char *search) {
-	char *temp = realloc(search, (strlen(argv) - 2) * sizeof(char));
+	char *temp = realloc(search, strlen(argv) * sizeof(char));
 	if (temp != NULL) {
 		search = temp;
+		strcpy(search, argv);
+		return ;
 	}
-	substring(argv, search, 2, 512);
+	/* substring(argValue, search, 0, 512); */
+	strcpy(search, "");
 }
 
 int setIndentation(char *argv) {
-	char temp[64] = "";
+	int maxIndentation = atoi(argv) + 1;
 
-	substring(argv, temp, 2, 512);
-	int maxIndentation = atoi(temp) + 1;
-
-	if (maxIndentation < 2) {
-		maxIndentation = 2;
-	}
-
+	if (maxIndentation < 2) maxIndentation = 2;
 	return maxIndentation;
 }
 
@@ -31,13 +57,13 @@ int setFileSearch(char *argv, char *fileSearch, char *fileType) {
 		return 1;
 	}
 
-	char *temp = realloc(fileSearch, (strlen(argv) - 2) * sizeof(char));
+	char *temp = realloc(fileSearch, strlen(argv) * sizeof(char));
 	if (temp != NULL) {
 		fileSearch = temp;
 	}
 
 
-	substring(argv, fileSearch, 2, findChar(argv, '/'));
+	substring(argv, fileSearch, 0, findChar(argv, '/'));
 	if (strlen(fileSearch) <= 0) {
 		printf("Missing search item !");
 		return 1;
