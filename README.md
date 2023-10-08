@@ -22,24 +22,22 @@ make
 * #### flag:
 
 ```
--ftext_to_find/file_type(leave empty for all file types)
+ttree --find <text>/<specific_file_type / empty_for_all>
 ```
-![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree04.PNG)
+<!-- ![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree04.PNG) -->
 
 
 * ### search for files / folders
 
-![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree02.PNG)
+```
+ttree --search <file/folder name>
+```
+<!-- ![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree02.PNG) -->
 
 
 * ### specify depth of subfolders
 
-![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree03.PNG)
-
-
-Ran on:
-
-windows 10, 11
-
-archlinux
-
+```
+ttree --max-index <number>
+```
+<!-- ![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree03.PNG) -->
