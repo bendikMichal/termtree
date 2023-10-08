@@ -2,3 +2,4 @@
 ttree
 *.o
 stringEx/
+*.out
