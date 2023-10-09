@@ -5,6 +5,13 @@ Made in c I suppose.
 
 ## Installation /  How to build 
 
+### If you are using `arch linux`
+- Available on `AUR`
+- run with `ttree`
+```
+yay -S termtree
+```
+
 ### Build using `make`
 * build files will be located in `./build` directory
     - make sure to have internet connection when using make, otherwise the build will fail (it has to get it's dependencies from github)
@@ -21,6 +28,7 @@ make install
 ```
 make uninstall
 ```
+
 
 ## Features
 * ### file / folder sizes
