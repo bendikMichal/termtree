@@ -100,15 +100,10 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 				// creating new path
 				char temp = '/';
-				char newpath[512];
+				char newpath[4096];
 				strcpy(newpath, dirname);
 				strncat(newpath, &temp, 1);
 				strcat(newpath, item->d_name);
-
-				// file type
-				stat(newpath, &st);
-				char cFileType[64] = "";
-				substring(item->d_name, cFileType, findChar(item->d_name, '.') + 1, 512);
 			
 				// check if is folder
 				if(S_ISDIR(st.st_mode) ) {
@@ -119,6 +114,10 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 					dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
 
 				} else {
+					// file type
+					stat(newpath, &st);
+					char cFileType[64] = "";
+					substring(item->d_name, cFileType, findChar(item->d_name, '.') + 1, 512);
 					dirsize += (long long)(unsigned long)st.st_size;
 
 					// search in files
