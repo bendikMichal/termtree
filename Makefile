@@ -19,3 +19,16 @@ $(BUILD_DIR):
 stringEx:
 	git clone https://github.com/bendikMichal/stringEx && cd stringEx && make
 
+ifeq ($(OS),Windows_NT)
+install:
+	@echo Install is only supported on linux
+uninstall:
+	@echo Uninstall is only supported on linux
+else
+install:
+	@sudo cp ttree.1 /usr/share/man/man1
+	@sudo cp build/ttree /usr/bin/ttree
+uninstall:
+	@sudo rm /usr/share/man/man1/ttree.1
+	@sudo rm /usr/bin/ttree
+endif
