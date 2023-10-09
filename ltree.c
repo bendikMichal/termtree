@@ -35,10 +35,11 @@ int normalize(long long bytes) {
 		printf("%s", buf);
 		return strlen(buf);
 	} else if (bytes < pow(10, 3)) {
-		sprintf(buf, "[ %d b  ", bytes);
+		sprintf(buf, "[ %lld b  ", bytes);
 		printf("%s", buf);
 		return strlen(buf);
 	} 
+	return 0;
 }
 
 bool findInFile (char *filename, char *item) {

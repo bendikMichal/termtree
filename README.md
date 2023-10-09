@@ -21,7 +21,7 @@ make
 * ### infile search
 
 ```
-ttree --find <text>/<specific_file_type / empty_for_all>
+ttree --find=<text>/<specific_file_type / empty_for_all>
 ```
 <!-- ![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree04.PNG) -->
 
@@ -29,7 +29,7 @@ ttree --find <text>/<specific_file_type / empty_for_all>
 * ### search for files / folders
 
 ```
-ttree --search <file/folder name>
+ttree --search=<file/folder name>
 ```
 <!-- ![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree02.PNG) -->
 
@@ -37,6 +37,6 @@ ttree --search <file/folder name>
 * ### specify depth of subfolders
 
 ```
-ttree --max-index <number>
+ttree --max-index=<number>
 ```
 <!-- ![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree03.PNG) -->
