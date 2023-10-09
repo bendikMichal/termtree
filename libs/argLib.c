@@ -2,6 +2,7 @@
 # include <stdlib.h>
 # include <string.h>
 
+# include "../tree.h"
 # include "argLib.h"
 # include "../stringEx/stringEx.h"
 
@@ -10,7 +11,19 @@ ARG* getArgs(int argc, char *argv[]) {
 	ARG *args = (ARG *) calloc(16, sizeof(ARG));
 	int nlabel = -1;
 	for (int i = 1; i < argc; i++) {
-		if (argv[i][0] == '-' || (argv[i][0] == '-' && argv[i][1] == '-')) {
+		if (argv[i][0] == '-' && argv[i][1] == '-') {
+			nlabel ++;
+			int splitIndex = findChar(argv[i], '=');
+			if (splitIndex) {
+				substring(argv[i], args[nlabel].al, 0, splitIndex);
+				substring(argv[i], args[nlabel].av, splitIndex + 1, 2047);
+				args[nlabel].label = args[nlabel].al;
+				args[nlabel].value = args[nlabel].av;
+			} else {
+				args[nlabel].label = argv[i];
+				args[nlabel].value = NULL;
+			}
+		} else if (argv[i][0] == '-') {
 			nlabel ++;
 			args[nlabel].label = argv[i];
 			args[nlabel].value = NULL;

@@ -71,8 +71,6 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 	directory = opendir(dirname);
 	struct stat st;
 
-	
-	
 	while ((item = readdir(directory)) != NULL) {
 		if (strcmp(item->d_name, ".") != 0 && strcmp(item->d_name, "..") != 0) {
 			
@@ -181,11 +179,11 @@ int main (int argc, char *argv[]) {
 
 	char *rawHelpString = 
 		"Help for TermTree \n"
-		"\t %s / %s \n\t\t- shows help\n"
-		"\t %s / %s <<text_to_find>/<file_type>> \n\t\t- search in file, if <file_type> is empty, search will be in all files\n"
-		"\t %s / %s <filename> \n\t\t- search for a specific filename\n"
-		"\t %s / %s <number> \n\t\t- replace <number> with a whole number specifing how deep into the folders should the seach go\n"
-		"\t %s / %s \n\t\t- wait for a keypress to close the program\n";
+		"\t %s, %s \n\t\t- shows help\n"
+		"\t %s, %s <text>/<file_type> \n\t\t- search in file, if <file_type> is empty, search will be in all files\n"
+		"\t %s, %s <file/folder name> \n\t\t- search for a specific file/folder name\n"
+		"\t %s. %s <number> \n\t\t- replace <number> with a whole number specifing how deep into the folders should the seach go\n"
+		"\t %s, %s \n\t\t- wait for a keypress to close the program\n";
 
 
 	int maxIndentation = 99;
@@ -255,7 +253,7 @@ int main (int argc, char *argv[]) {
 			wait = true;
 		}
 		else {
-			printf("Unknown flag: %s \n", args[i].label);
+			printf("Unknown flag: >%s<\n", args[i].label);
 			return 1;
 		}
 	}
