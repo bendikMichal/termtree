@@ -5,11 +5,21 @@ Made in c I suppose.
 
 ## Installation /  How to build 
 
-### using `make`
+### Build using `make`
 * build files will be located in `./build` directory
     - make sure to have internet connection when using make, otherwise the build will fail (it has to get it's dependencies from github)
 ```
 make
+```
+### Installation (linux only)
+```
+make install
+```
+- After installation the program should be callable by `ttree`
+- To see manual use `man ttree`
+### Uninstallation (linux only)
+```
+make uninstall
 ```
 
 ## Features
