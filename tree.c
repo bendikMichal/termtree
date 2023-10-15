@@ -106,7 +106,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 				// check if is folder
 				if(S_ISDIR(st.st_mode) ) {
 					if (indentation + 1 < maxIndentation) {
-						printf("^ %s\n", item->d_name);
+						printf("^ %s%s \t\t [ %s ]%s\n", CBOLD, item->d_name, newpath, CNORM);
 					}
 					// recursive call
 					dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
@@ -175,7 +175,8 @@ int main (int argc, char *argv[]) {
 		"--search",
 		"--find",
 		"--max-index",
-		"--leave-open"
+		"--leave-open",
+		"--version"
 
 	};
 	char SLabels[][MAX_LABEL_LEN] = {
@@ -183,7 +184,8 @@ int main (int argc, char *argv[]) {
 		"-s",
 		"-f",
 		"-i",
-		"-L"
+		"-L",
+		"-v"
 	};
 
 	char *rawHelpString = 
@@ -263,8 +265,13 @@ int main (int argc, char *argv[]) {
 		else if (strcmp(args[i].label, LLabels[4]) == 0 || strcmp(args[i].label, SLabels[4]) == 0) {
 			wait = true;
 		}
+		// version info
+		else if (strcmp(args[i].label, LLabels[5]) == 0 || strcmp(args[i].label, SLabels[5]) == 0) {
+			printf("TermTree v%s\n", version);
+			return 0;
+		}
 		else {
-			printf("Unknown flag: %s \n", args[i].label);
+			printf("Unknown flag: >%s< \n", args[i].label);
 			return 1;
 		}
 	}
