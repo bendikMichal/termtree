@@ -82,7 +82,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 		while ((item = readdir(directory)) != NULL) {
 			if (strcmp(item->d_name, ".") != 0 && strcmp(item->d_name, "..") != 0) {
 
-				resetColor(cTerm);
+				printf("%s", CNORM);
 
 				// make indentation
 				if (indentation + 1 < maxIndentation) {
@@ -93,7 +93,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 				// checking if searched file name
 				if (strstr(item->d_name, search) && searchEnabled) {
-					SetConsoleTextAttribute(cTerm, 0xF0);
+					printf("%s", CBLACK);
 				}
 
 				// creating new path
@@ -103,6 +103,12 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 				strncat(newpath, &temp, 1);
 				strcat(newpath, item->d_name);
 			
+				int out = stat(newpath, &st);
+				if (out < 0) {
+					fprintf(stderr, "%sStat failed!%s\n", CRED, CNORM);
+					return 1;
+				}
+
 				// check if is folder
 				if(S_ISDIR(st.st_mode) ) {
 					if (indentation + 1 < maxIndentation) {
@@ -113,7 +119,6 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 				} else {
 					// file type
-					stat(newpath, &st);
 					char cFileType[64] = "";
 					substring(item->d_name, cFileType, findChar(item->d_name, '.') + 1, 512);
 					dirsize += (long long)(unsigned long)st.st_size;
@@ -124,7 +129,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 						found = findInFile(newpath, fileSearch);
 					}
 					if (found) {
-						SetConsoleTextAttribute(cTerm, 0xF0);
+						printf("%s", CBLACK);
 					}
 
 					// print name
@@ -137,11 +142,11 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 						printf("] ");
 						
 						printf("%s", item->d_name);
-						resetColor(cTerm);
+						printf("%s", CNORM);
 						printf("\n");
 					}
 				}
-				resetColor(cTerm);
+				printf("%s", CNORM);
 			}
 		}
 		
@@ -157,7 +162,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 			}
 			printf("]");
 
-			resetColor(cTerm);
+			printf("%s", CNORM);
 			printf("\n");
 		}
 
@@ -198,8 +203,10 @@ int main (int argc, char *argv[]) {
 
 
 
-	int maxIndentation = 99;
-	
+	// INFO: new default is 2
+	/* int maxIndentation = 99; */
+	int maxIndentation = 2;
+
 	bool searchEnabled = false;
 	char *search = calloc(2, sizeof(char));
 	
@@ -292,6 +299,6 @@ int main (int argc, char *argv[]) {
 	free(search);
 	free(fileSearch);
 	free(fileType);
-	resetColor(cTerm);
+	printf("%s", CNORM);
 	return 0;
 }

@@ -102,7 +102,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 				// file type
 				int out = stat(newpath, &st);
 				if (out < 0) {
-					fprintf(stderr, "Stat failed!");
+					fprintf(stderr, "%sStat failed!%s\n", CRED, CNORM);
 					return 1;
 				}
 				char cFileType[63] = "";
@@ -186,7 +186,9 @@ int main (int argc, char *argv[]) {
 		"\t %s, %s \n\t\t- wait for a keypress to close the program\n";
 
 
-	int maxIndentation = 99;
+	// INFO: new default is 2
+	/* int maxIndentation = 99; */
+	int maxIndentation = 2;
 	
 	bool searchEnabled = false;
 	char *search = calloc(2, sizeof(char));
