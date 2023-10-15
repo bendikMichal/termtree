@@ -6,6 +6,7 @@
 # include <dirent.h>
 # include <sys/stat.h>
 # include <windows.h>
+# include <errno.h>
 
 # include "libs/argLib.h"
 # include "stringEx/stringEx.h"
@@ -103,16 +104,16 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 				strncat(newpath, &temp, 1);
 				strcat(newpath, item->d_name);
 			
-				int out = lstat(newpath, &st);
+				int out = stat(newpath, &st);
 				if (out < 0) {
-					fprintf(stderr, "%sStat failed!%s\n", CRED, CNORM);
+					fprintf(stderr, "%sStat failed! errno(%d), dir:%s%s\n", CRED, errno, newpath, CNORM);
 					return 1;
 				}
 
 				// check if is folder
 				if(S_ISDIR(st.st_mode) ) {
 					if (indentation + 1 < maxIndentation) {
-						printf("^ %s%s \t\t [ %s ]%s\n", CBOLD, item->d_name, newpath, CNORM);
+						printf("^ %s%s%s%s%s \t\t [ %s ]%s\n", CBOLD, CBLUE_FG, item->d_name, CNORM, CBOLD, newpath, CNORM);
 					}
 					// recursive call
 					dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
@@ -122,6 +123,9 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 					char cFileType[64] = "";
 					substring(item->d_name, cFileType, findChar(item->d_name, '.') + 1, 512);
 					dirsize += (long long)(unsigned long)st.st_size;
+
+					// file type check
+					bool isExec = st.st_mode & S_IXUSR;
 
 					// search in files
 					bool found = false;
@@ -141,7 +145,11 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 						}
 						printf("] ");
 						
-						printf("%s", item->d_name);
+						if (isExec) {
+							printf("%s%s%s\n", CGREEN_FG, item->d_name, CNORM);
+						} else {
+							printf("%s", item->d_name);
+						}
 						printf("%s", CNORM);
 						printf("\n");
 					}
