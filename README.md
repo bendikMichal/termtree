@@ -33,7 +33,25 @@ make uninstall
 ## Features
 * ### file / folder sizes
 
-![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree01.PNG)
+<!-- ![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree01.PNG) -->
+```
+$ ttree -i 3
+.
+^ example_dir_3                  [ ./example_dir_3 ]
+  | [ 101 b     ] example_file.txt
+  | [ 14 b      ] example_file_2.txt
+  |_[ 115 b     ]
+[ 98 b      ] example_file.txt
+^ example_dir_1                  [ ./example_dir_1 ]
+  | [ 0 b       ] example_file.txt
+  |_[ 0 b       ]
+^ example_dir_2                  [ ./example_dir_2 ]
+  | ^ example_inside_dir                 [ ./example_dir_2/example_inside_dir ]
+  |   |_[ 0 b       ]
+  |_[ 0 b       ]
+  |_[ 213 b     ]
+
+```
 
 
 * ### infile search
