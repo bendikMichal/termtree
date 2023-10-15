@@ -5,6 +5,7 @@
 # include <stdbool.h>
 # include <dirent.h>
 # include <sys/stat.h>
+# include <errno.h>
 
 # include "libs/argLib.h"
 # include "stringEx/stringEx.h"
@@ -102,7 +103,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 				// file type
 				int out = stat(newpath, &st);
 				if (out < 0) {
-					fprintf(stderr, "%sStat failed!%s\n", CRED, CNORM);
+					fprintf(stderr, "%sStat failed! errno(%d)%s\n", CRED, errno, CNORM);
 					return 1;
 				}
 				char cFileType[63] = "";
@@ -117,7 +118,6 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 				if (found) {
 					printf(CBLACK);
 				}
-
 
 				// print name
 				if (indentation + 1 < maxIndentation) {
