@@ -157,7 +157,12 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 			printf(" ");
 		}
 		printf("]");
+		printf("\n");
 
+		// spacer after a directory
+		for (int i = 0 ; i < indentation - 1 ; i++) {
+			printf("  | ");
+		}
 		printf("\n");
 	}
 
