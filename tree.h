@@ -7,4 +7,6 @@
 # define CBLACK "\x1B[7m"
 # define MAX_LABEL_LEN 64
 
+# define version "2.1.1"
+
 # endif
