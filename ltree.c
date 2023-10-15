@@ -94,25 +94,29 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 			// check if is folder
 			if(item->d_type == DT_DIR) {
 				if (indentation + 1 < maxIndentation) {
-					printf("^ %s%s \t\t [ %s ]%s\n", CBOLD, item->d_name, newpath, CNORM);
+					printf("^ %s%s%s%s%s \t\t [ %s ]%s\n", CBOLD, CBLUE_FG, item->d_name, CNORM, CBOLD, newpath, CNORM);
 				}
 				// recursive call
 				dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType);
 
 			} else {
 				// file type
-				int out = stat(newpath, &st);
+				/* int out = stat(newpath, &st); */
+				int out = lstat(newpath, &st);
 				if (out < 0) {
-					fprintf(stderr, "%sStat failed! errno(%d)%s\n", CRED, errno, CNORM);
+					fprintf(stderr, "%sStat failed! errno(%d), dir:%s%s\n", CRED, errno, newpath, CNORM);
 					return 1;
 				}
 				char cFileType[63] = "";
 				substring(item->d_name, cFileType, findChar(item->d_name, '.') + 1, 512);
 				dirsize += (long long)(unsigned long)st.st_size;
+				// file type check
+				bool isSymLink = S_ISLNK(st.st_mode);
+				bool isExec = st.st_mode & S_IXUSR;
 
 				// search in files
 				bool found = false;
-				if (fileSearchEnabled && (strcmp(fileType, cFileType) == 0 || strcmp(fileType, "") == 0)) {
+				if (fileSearchEnabled && (strcmp(fileType, cFileType) == 0 || strcmp(fileType, "") == 0) && !isSymLink) {
 					found = findInFile(newpath, fileSearch);
 				}
 				if (found) {
@@ -128,7 +132,14 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 					}
 					printf("] ");
 					
-					printf("%s\n", item->d_name);
+					if (isSymLink) {
+						printf("%s%s%s\n", CRED_FG, item->d_name, CNORM);
+					}
+					else if (isExec) {
+						printf("%s%s%s\n", CGREEN_FG, item->d_name, CNORM);
+					} else {
+						printf("%s\n", item->d_name);
+					}
 				}
 			}
 			printf(CNORM);

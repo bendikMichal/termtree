@@ -103,7 +103,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 				strncat(newpath, &temp, 1);
 				strcat(newpath, item->d_name);
 			
-				int out = stat(newpath, &st);
+				int out = lstat(newpath, &st);
 				if (out < 0) {
 					fprintf(stderr, "%sStat failed!%s\n", CRED, CNORM);
 					return 1;
