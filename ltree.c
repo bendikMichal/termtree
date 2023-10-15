@@ -10,12 +10,6 @@
 # include "stringEx/stringEx.h"
 # include "tree.h"
 
-// use to build : gcc -o ttree ltree.c libs/stringex.c libs/argLib.c
-
-# define CNORM "\x1B[00m"
-# define CBLACK "\x1B[7m"
-
-
 int normalize(long long bytes) {
 	char buf[128] = "";
 	if (bytes >= pow(10, 12)) {
@@ -99,14 +93,18 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 			// check if is folder
 			if(item->d_type == DT_DIR) {
 				if (indentation + 1 < maxIndentation) {
-					printf("^ %s\n", item->d_name);
+					printf("^ %s%s \t\t [ %s ]%s\n", CBOLD, item->d_name, newpath, CNORM);
 				}
 				// recursive call
 				dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType);
 
 			} else {
 				// file type
-				stat(newpath, &st);
+				int out = stat(newpath, &st);
+				if (out < 0) {
+					fprintf(stderr, "Stat failed!");
+					return 1;
+				}
 				char cFileType[63] = "";
 				substring(item->d_name, cFileType, findChar(item->d_name, '.') + 1, 512);
 				dirsize += (long long)(unsigned long)st.st_size;
@@ -198,7 +196,7 @@ int main (int argc, char *argv[]) {
 	bool wait = false;
 
 	if (argc > 16) {
-		printf("Too many arguments passed !");
+		fprintf(stderr, "Too many arguments passed !\n");
 		return 1;
 	} 
 
@@ -221,7 +219,7 @@ int main (int argc, char *argv[]) {
 		// file name search
 		else if (strcmp(args[i].label, LLabels[1]) == 0 || strcmp(args[i].label, SLabels[1]) == 0) {
 			if (args[i].value == NULL) {
-				printf("Missing value for search \n");
+				fprintf(stderr, "Missing value for search \n");
 				return 1;
 			}
 			searchEnabled = true;
@@ -230,20 +228,20 @@ int main (int argc, char *argv[]) {
 		// in-file search
 		else if (strcmp(args[i].label, LLabels[2]) == 0 || strcmp(args[i].label, SLabels[2]) == 0) {
 			if (args[i].value == NULL) {
-				printf("Missing value for in-file search \n");
+				fprintf(stderr, "Missing value for in-file search \n");
 				return 1;
 			}
 			fileSearchEnabled = true;
 			int res = setFileSearch(args[i].value, fileSearch, fileType);
 			if (res == 1) {
-				printf("Failed to set in-file search \n");
+				fprintf(stderr, "Failed to set in-file search \n");
 				return 1;
 			}
 		}
 		// max-indentation also known as max index
 		else if (strcmp(args[i].label, LLabels[3]) == 0 || strcmp(args[i].label, SLabels[3]) == 0) {
 			if (args[i].value == NULL) {
-				printf("Missing value for max index/indentation \n");
+				fprintf(stderr, "Missing value for max index/indentation \n");
 				return 1;
 			}
 			maxIndentation = setIndentation(args[i].value);  
@@ -253,7 +251,7 @@ int main (int argc, char *argv[]) {
 			wait = true;
 		}
 		else {
-			printf("Unknown flag: >%s<\n", args[i].label);
+			fprintf(stderr, "Unknown flag: >%s<\n", args[i].label);
 			return 1;
 		}
 	}

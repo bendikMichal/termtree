@@ -11,8 +11,6 @@
 # include "stringEx/stringEx.h"
 # include "tree.h"
 
-// use to build : gcc -o ttree tree.c libs/stringex.c libs/argLib.c
-
 // coloring
 void allColors(HANDLE cTerm) {
 	for (int i = 0 ; i < 256; i++) {
