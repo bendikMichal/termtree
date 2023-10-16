@@ -207,7 +207,8 @@ int main (int argc, char *argv[]) {
 		"\t %s, %s <text>/<file_type> \n\t\t- search in file, if <file_type> is empty, search will be in all files\n"
 		"\t %s, %s <file/folder name> \n\t\t- search for a specific file/folder name\n"
 		"\t %s. %s <number> \n\t\t- replace <number> with a whole number specifing how deep into the folders should the seach go\n"
-		"\t %s, %s \n\t\t- wait for a keypress to close the program\n";
+		"\t %s, %s \n\t\t- wait for a keypress to close the program\n"
+		"\t %s, %s \n\t\t- display version number\n";
 
 
 
@@ -236,57 +237,58 @@ int main (int argc, char *argv[]) {
 
 	for (int i = 0; i < labelCount; i++) {
 		// help
-		if (strcmp(args[i].label, LLabels[0]) == 0 || strcmp(args[i].label, SLabels[0]) == 0) {
+		if (strcmp(args[i].label, LLabels[HELP]) == 0 || strcmp(args[i].label, SLabels[HELP]) == 0) {
 			printf(rawHelpString, 
-					LLabels[0], SLabels[0],
-					LLabels[1], SLabels[1],
-					LLabels[2], SLabels[2],
-					LLabels[3], SLabels[3],
-					LLabels[4], SLabels[4]
+					LLabels[HELP], SLabels[HELP],
+					LLabels[SEARCH], SLabels[SEARCH],
+					LLabels[FIND], SLabels[FIND],
+					LLabels[MAX_INDEX], SLabels[MAX_INDEX],
+					LLabels[LEAVE_OPEN], SLabels[LEAVE_OPEN],
+					LLabels[VERSION], SLabels[VERSION]
 					);
 			return 0;
 		}
 		// file name search
-		else if (strcmp(args[i].label, LLabels[1]) == 0 || strcmp(args[i].label, SLabels[1]) == 0) {
+		else if (strcmp(args[i].label, LLabels[SEARCH]) == 0 || strcmp(args[i].label, SLabels[SEARCH]) == 0) {
 			if (args[i].value == NULL) {
-				printf("Missing value for search \n");
+				fprintf(stderr, "Missing value for search \n");
 				return 1;
 			}
 			searchEnabled = true;
 			setSearch(args[i].value, search);
 		}
 		// in-file search
-		else if (strcmp(args[i].label, LLabels[2]) == 0 || strcmp(args[i].label, SLabels[2]) == 0) {
+		else if (strcmp(args[i].label, LLabels[FIND]) == 0 || strcmp(args[i].label, SLabels[FIND]) == 0) {
 			if (args[i].value == NULL) {
-				printf("Missing value for in-file search \n");
+				fprintf(stderr, "Missing value for in-file search \n");
 				return 1;
 			}
 			fileSearchEnabled = true;
 			int res = setFileSearch(args[i].value, fileSearch, fileType);
 			if (res == 1) {
-				printf("Failed to set in-file search \n");
+				fprintf(stderr, "Failed to set in-file search \n");
 				return 1;
 			}
 		}
 		// max-indentation also known as max index
-		else if (strcmp(args[i].label, LLabels[3]) == 0 || strcmp(args[i].label, SLabels[3]) == 0) {
+		else if (strcmp(args[i].label, LLabels[MAX_INDEX]) == 0 || strcmp(args[i].label, SLabels[MAX_INDEX]) == 0) {
 			if (args[i].value == NULL) {
-				printf("Missing value for max index/indentation \n");
+				fprintf(stderr, "Missing value for max index/indentation \n");
 				return 1;
 			}
 			maxIndentation = setIndentation(args[i].value);  
 		}
 		// leave open after finish = aka wait for user input to close
-		else if (strcmp(args[i].label, LLabels[4]) == 0 || strcmp(args[i].label, SLabels[4]) == 0) {
+		else if (strcmp(args[i].label, LLabels[LEAVE_OPEN]) == 0 || strcmp(args[i].label, SLabels[LEAVE_OPEN]) == 0) {
 			wait = true;
 		}
 		// version info
-		else if (strcmp(args[i].label, LLabels[5]) == 0 || strcmp(args[i].label, SLabels[5]) == 0) {
+		else if (strcmp(args[i].label, LLabels[VERSION]) == 0 || strcmp(args[i].label, SLabels[VERSION]) == 0) {
 			printf("TermTree v%s\n", version);
 			return 0;
 		}
 		else {
-			printf("Unknown flag: >%s< \n", args[i].label);
+			fprintf(stderr, "Unknown flag: >%s<\n", args[i].label);
 			return 1;
 		}
 	}

@@ -13,4 +13,13 @@
 
 # define version "2.2.0"
 
+enum ARG_TYPES {
+	HELP,
+	SEARCH,
+	FIND,
+	MAX_INDEX,
+	LEAVE_OPEN,
+	VERSION
+};
+
 # endif
