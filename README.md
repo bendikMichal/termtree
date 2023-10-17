@@ -19,6 +19,7 @@ yay -S termtree
 make
 ```
 ### Installation (linux only)
+- make sure you run `make` before installing
 ```
 make install
 ```
