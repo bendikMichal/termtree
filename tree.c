@@ -9,70 +9,11 @@
 # include <errno.h>
 
 # include "libs/argLib.h"
+# include "libs/common.h"
 # include "stringEx/stringEx.h"
 # include "tree.h"
 
-// coloring
-void allColors(HANDLE cTerm) {
-	for (int i = 0 ; i < 256; i++) {
-		SetConsoleTextAttribute(cTerm, i);
-
-		printf("\nTree %d", i);
-	}
-}
-
-void resetColor(HANDLE cTerm) {
-	SetConsoleTextAttribute(cTerm, 15);
-}
-//
-
-bool findInFile (char *filename, char *item) {
-	FILE *file;
-	fopen_s(&file, filename, "r");
-	
-	if (file == NULL) {
-		fclose(file);
-		return false;
-	}
-
-	char line[2048];
-	while(fgets(line, sizeof(line), file)) {
-		if (strstr(line, item)) {
-			fclose(file);
-			return true;
-		}
-	}
-
-	fclose(file);
-	return false;
-}
-
-int normalize(long long bytes) {
-	char buf[128] = "";
-	if (bytes >= pow(10, 12)) {
-		sprintf(buf, "[ %.1f tb ", bytes / pow(10, 12));
-		printf("%s", buf);
-		return strlen(buf);
-	} else if (bytes >= pow(10, 9)) {
-		sprintf(buf, "[ %.1f gb ", bytes / pow(10, 9));
-		printf("%s", buf);
-		return strlen(buf);
-	} else if (bytes >= pow(10, 6)) {
-		sprintf(buf, "[ %.1f mb ", bytes / pow(10, 6));
-		printf("%s", buf);
-		return strlen(buf);
-	} else if (bytes >= pow(10, 3)) {
-		sprintf(buf, "[ %.1f kb ", bytes / pow(10, 3));
-		printf("%s", buf);
-		return strlen(buf);
-	} else if (bytes < pow(10, 3)) {
-		sprintf(buf, "[ %d b  ", bytes);
-		printf("%s", buf);
-		return strlen(buf);
-	} 
-}
-
-long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType, HANDLE cTerm) {
+long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType) {
 	struct dirent *item;
 	directory = opendir(dirname);
 	struct stat st;
@@ -116,7 +57,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 						printf("^ %s%s%s%s%s \t\t [ %s ]%s\n", CBOLD, CBLUE_FG, item->d_name, CNORM, CBOLD, newpath, CNORM);
 					}
 					// recursive call
-					dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
+					dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType);
 
 				} else {
 					// file type
@@ -189,35 +130,6 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 int main (int argc, char *argv[]) {
 
-	char LLabels[][MAX_LABEL_LEN] = {
-		"--help",
-		"--search",
-		"--find",
-		"--max-index",
-		"--leave-open",
-		"--version"
-
-	};
-	char SLabels[][MAX_LABEL_LEN] = {
-		"-h",
-		"-s",
-		"-f",
-		"-i",
-		"-L",
-		"-v"
-	};
-
-	char *rawHelpString = 
-		"Help for TermTree \n"
-		"\t %s, %s \n\t\t- shows help\n"
-		"\t %s, %s <text>/<file_type> \n\t\t- search in file, if <file_type> is empty, search will be in all files\n"
-		"\t %s, %s <file/folder name> \n\t\t- search for a specific file/folder name\n"
-		"\t %s. %s <number> \n\t\t- replace <number> with a whole number specifing how deep into the folders should the seach go\n"
-		"\t %s, %s \n\t\t- wait for a keypress to close the program\n"
-		"\t %s, %s \n\t\t- display version number\n";
-
-
-
 	// INFO: new default is 2
 	/* int maxIndentation = 99; */
 	int maxIndentation = 2;
@@ -230,7 +142,6 @@ int main (int argc, char *argv[]) {
 	char *fileType = calloc(2, sizeof(char));
 
 	bool wait = false;
-
 
 	if (argc > 16) {
 		printf("Too many arguments passed !");
@@ -299,12 +210,11 @@ int main (int argc, char *argv[]) {
 		}
 	}
 
-	HANDLE cTerm = GetStdHandle(STD_OUTPUT_HANDLE);
 	
 	DIR *directory;
 	
 	printf(".\n");
-	ls(".", directory, 0, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, cTerm);
+	ls(".", directory, 0, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType);
 
 	if (wait) {
 		char tempC;

@@ -14,7 +14,7 @@ ARG* getArgs(int argc, char *argv[]) {
 		if (argv[i][0] == '-' && argv[i][1] == '-') {
 			nlabel ++;
 			int splitIndex = findChar(argv[i], '=');
-			if (splitIndex) {
+			if (splitIndex >= 0) {
 				substring(argv[i], args[nlabel].al, 0, splitIndex);
 				substring(argv[i], args[nlabel].av, splitIndex + 1, 2047);
 				args[nlabel].label = args[nlabel].al;
