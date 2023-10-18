@@ -28,14 +28,14 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 				// make indentation
 				if (indentation + 1 < maxIndentation) {
-					for (int i = 0 ; i < indentation ; i++) {
-						printf("  | ");
-					}
+					printIndentation(indentation);
 				}
 
 				// checking if searched file name
+				bool searchFound = false;
 				if (strstr(item->d_name, search) && searchEnabled) {
 					printf("%s", CBLACK);
+					searchFound = true;
 				}
 
 				// creating new path
@@ -53,7 +53,14 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 				// check if is folder
 				if(S_ISDIR(st.st_mode) ) {
-					if (indentation + 1 < maxIndentation) {
+					if (indentation + 1 < maxIndentation || searchFound) {
+						// fill indentation if hadn't already
+						if (indentation + 1 >= maxIndentation) {
+							printf("%s", CNORM);
+							printIndentation(indentation);
+							printf("%s", CBLACK);
+						}
+
 						printf("^ %s%s%s%s%s \t\t [ %s ]%s\n", CBOLD, CBLUE_FG, item->d_name, CNORM, CBOLD, newpath, CNORM);
 					}
 					// recursive call
@@ -78,7 +85,14 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 					}
 
 					// print name
-					if (indentation + 1 < maxIndentation) {
+					if (indentation + 1 < maxIndentation || found || searchFound) {
+						// fill indentation if hadn't already
+						if (indentation + 1 >= maxIndentation) {
+							printf("%s", CNORM);
+							printIndentation(indentation);
+							printf("%s", CBLACK);
+						}
+
 						int tempLen = normalize((long long)(unsigned long)st.st_size);
 
 						for (int i = 0 ; i < 10 - tempLen ; i++) {
@@ -87,11 +101,14 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 						printf("] ");
 						
 						if (isExec) {
-							printf("%s%s%s\n", CGREEN_FG, item->d_name, CNORM);
+							printf("%s%s%s", CGREEN_FG, item->d_name, CNORM);
 						} else {
 							printf("%s", item->d_name);
 						}
 						printf("%s", CNORM);
+						if (found || searchFound) {
+							printf("%s\t\t [ %s ]%s", CBOLD, newpath, CNORM);
+						}
 						printf("\n");
 					}
 				}

@@ -8,7 +8,8 @@ extern char LLabels[][MAX_LABEL_LEN];
 extern char SLabels[][MAX_LABEL_LEN];
 extern char *rawHelpString;
 
-int normalize(long long bytes);
+int normalize (long long bytes);
 bool findInFile (char *filename, char *item);
+void printIndentation (int indentation);
 
 # endif

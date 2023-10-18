@@ -33,7 +33,7 @@ char *rawHelpString =
 	"\t %s, %s \n\t\t- wait for a keypress to close the program\n"
 	"\t %s, %s \n\t\t- display version number\n";
 
-int normalize(long long bytes) {
+int normalize (long long bytes) {
 	if (bytes < 0) return 0;
 	char buf[128] = "";
 	if (bytes >= pow(10, 12)) {
@@ -79,5 +79,11 @@ bool findInFile (char *filename, char *item) {
 
 	fclose(file);
 	return false;
+}
+
+void printIndentation (int indentation) {
+	for (int i = 0 ; i < indentation ; i++) {
+		printf("  | ");
+	}
 }
 
