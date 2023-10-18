@@ -7,9 +7,11 @@ BUILD_CMD_LINUX := gcc -o $(BUILD_DIR)/ttree ltree.c libs/argLib.c libs/common.c
 
 ifeq ($(OS),Windows_NT)
 $(BUILD_DIR)/tree.exe: tree.c stringEx $(BUILD_DIR)
+	cd stringEx && git pull && make
 	$(BUILD_CMD_WIN)
 else
 $(BUILD_DIR)/tree: tree.c stringEx $(BUILD_DIR)
+	cd stringEx && git pull && make
 	$(BUILD_CMD_LINUX)
 endif
 
