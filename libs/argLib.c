@@ -28,6 +28,11 @@ ARG* getArgs(int argc, char *argv[]) {
 			args[nlabel].label = argv[i];
 			args[nlabel].value = NULL;
 		} else {
+			if (nlabel < 0) {
+				fprintf(stderr, "Invalid arguments!\n Tip: Check the order of arguments and look for missing \"-\"\n");
+				free(args);
+				return NULL;
+			}
 			args[nlabel].value = argv[i];
 		}
 	}

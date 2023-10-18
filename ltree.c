@@ -170,6 +170,9 @@ int main (int argc, char *argv[]) {
 
 	int labelCount = getLabelCount(argc, argv);
 	ARG *args = getArgs(argc, argv);
+	if (args == NULL) {
+		return 1;
+	}
 
 	for (int i = 0; i < labelCount; i++) {
 		// help
