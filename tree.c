@@ -16,6 +16,10 @@
 long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType) {
 	struct dirent *item;
 	directory = opendir(dirname);
+	if (directory == NULL) {
+		fprintf(stderr, "Failed to open: %s, errno(%d)\n", dirname, errno);
+		return 0;
+	}
 	struct stat st;
 
 	long long dirsize = 0;

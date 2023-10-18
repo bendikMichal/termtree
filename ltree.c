@@ -20,6 +20,10 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 	struct dirent *item;
 	directory = opendir(dirname);
+	if (directory == NULL) {
+		fprintf(stderr, "Failed to open: %s, errno(%d)\n", dirname, errno);
+		return 0;
+	}
 	struct stat st;
 
 	while ((item = readdir(directory)) != NULL) {
@@ -46,6 +50,13 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 			strncat(newpath, &temp, 1);
 			strcat(newpath, item->d_name);
 		
+			/* int out = stat(newpath, &st); */
+			int out = lstat(newpath, &st);
+			if (out < 0) {
+				fprintf(stderr, "%sStat failed! errno(%d), dir:%s%s\n", CRED, errno, newpath, CNORM);
+				return 1;
+			}
+
 			// check if is folder
 			if(item->d_type == DT_DIR) {
 				if (indentation + 1 < maxIndentation || searchFound) {
@@ -65,12 +76,6 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 			} else {
 				// file type
-				/* int out = stat(newpath, &st); */
-				int out = lstat(newpath, &st);
-				if (out < 0) {
-					fprintf(stderr, "%sStat failed! errno(%d), dir:%s%s\n", CRED, errno, newpath, CNORM);
-					return 1;
-				}
 				char cFileType[63] = "";
 				substring(item->d_name, cFileType, findChar(item->d_name, '.') + 1, 512);
 				dirsize += (long long)(unsigned long)st.st_size;
