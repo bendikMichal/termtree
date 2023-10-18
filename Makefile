@@ -2,8 +2,8 @@
 BUILD_DIR := build
 
 i_stringEx := -L./stringEx -I./stringEx -lstringEx
-BUILD_CMD_WIN := gcc -o $(BUILD_DIR)/ttree tree.c libs/argLib.c libs/common.c $(i_stringEx)
-BUILD_CMD_LINUX := gcc -o $(BUILD_DIR)/ttree ltree.c libs/argLib.c libs/common.c $(i_stringEx)
+BUILD_CMD_WIN := gcc -o $(BUILD_DIR)/ttree tree.c libs/argLib.c libs/common.c libs/specificWindows.c $(i_stringEx)
+BUILD_CMD_LINUX := gcc -o $(BUILD_DIR)/ttree tree.c libs/argLib.c libs/common.c libs/specificLinux.c $(i_stringEx)
 
 ifeq ($(OS),Windows_NT)
 $(BUILD_DIR)/tree.exe: tree.c stringEx $(BUILD_DIR)
