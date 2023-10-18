@@ -59,7 +59,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 					printf("^ %s%s%s%s%s \t\t [ %s ]%s\n", CBOLD, CBLUE_FG, item->d_name, CNORM, CBOLD, newpath, CNORM);
 				}
 
-				bool hasPermission = st.st_mode & S_IRGRP;
+				bool hasPermission = st.st_mode & S_IRUSR;
 				// recursive call
 				if (hasPermission) dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType);
 
