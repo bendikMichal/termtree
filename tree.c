@@ -54,17 +54,8 @@ int main (int argc, char *argv[]) {
 					);
 			return 0;
 		}
-		// file name search
-		else if (strcmp(args[i].label, LLabels[SEARCH]) == 0 || strcmp(args[i].label, SLabels[SEARCH]) == 0) {
-			if (args[i].value == NULL) {
-				fprintf(stderr, "Missing value for search \n");
-				return 1;
-			}
-			searchEnabled = true;
-			setSearch(args[i].value, search);
-		}
 		// in-file search
-		else if (strcmp(args[i].label, LLabels[FIND]) == 0 || strcmp(args[i].label, SLabels[FIND]) == 0) {
+		else if (strcmp(args[i].label, LLabels[SEARCH]) == 0 || strcmp(args[i].label, SLabels[SEARCH]) == 0) {
 			if (args[i].value == NULL) {
 				fprintf(stderr, "Missing value for in-file search \n");
 				return 1;
@@ -75,6 +66,15 @@ int main (int argc, char *argv[]) {
 				fprintf(stderr, "Failed to set in-file search \n");
 				return 1;
 			}
+		}
+		// find file name 
+		else if (strcmp(args[i].label, LLabels[FIND]) == 0 || strcmp(args[i].label, SLabels[FIND]) == 0) {
+			if (args[i].value == NULL) {
+				fprintf(stderr, "Missing value for search \n");
+				return 1;
+			}
+			searchEnabled = true;
+			setSearch(args[i].value, search);
 		}
 		// max-indentation also known as max index
 		else if (strcmp(args[i].label, LLabels[MAX_INDEX]) == 0 || strcmp(args[i].label, SLabels[MAX_INDEX]) == 0) {

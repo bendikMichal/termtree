@@ -28,7 +28,7 @@ char *rawHelpString =
 	"Help for TermTree \n"
 	"\t %s, %s \n\t\t- shows help\n"
 	"\t %s, %s <text>/<file_type> \n\t\t- search in file, if <file_type> is empty, search will be in all files\n"
-	"\t %s, %s <file/folder name> \n\t\t- search for a specific file/folder name\n"
+	"\t %s, %s <file/folder name> \n\t\t- find a specific file/folder name\n"
 	"\t %s. %s <number> \n\t\t- replace <number> with a whole number specifing how deep into the folders should the seach go\n"
 	"\t %s, %s \n\t\t- wait for a keypress to close the program\n"
 	"\t %s, %s \n\t\t- display version number\n";
