@@ -70,7 +70,7 @@ int main (int argc, char *argv[]) {
 		// find file name 
 		else if (strcmp(args[i].label, LLabels[FIND]) == 0 || strcmp(args[i].label, SLabels[FIND]) == 0) {
 			if (args[i].value == NULL) {
-				fprintf(stderr, "Missing value for search \n");
+				fprintf(stderr, "Missing value for find\n");
 				return 1;
 			}
 			searchEnabled = true;
