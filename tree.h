@@ -11,11 +11,11 @@
 # define CBLUE_FG "\x1B[34m"
 # define MAX_LABEL_LEN 64
 
-# define version "2.2.4"
+# define version "2.2.5"
 
 enum ARG_TYPES {
 	HELP,
-	SEARCH,
+	SEARCH_IN_FILE,
 	FIND,
 	MAX_INDEX,
 	LEAVE_OPEN,

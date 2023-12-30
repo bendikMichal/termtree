@@ -8,7 +8,7 @@
 
 char LLabels[][MAX_LABEL_LEN] = {
 	"--help",
-	"--search",
+	"--search-in-file",
 	"--find",
 	"--max-index",
 	"--leave-open",

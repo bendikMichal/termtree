@@ -58,7 +58,7 @@ $ ttree -i 3
 * ### infile search
 
 ```
-ttree --search=<text>/<specific_file_type / empty_for_all>
+ttree --search-in-file=<text>/<specific_file_type / empty_for_all>
 ```
 <!-- ![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree04.PNG) -->
 
@@ -66,7 +66,7 @@ ttree --search=<text>/<specific_file_type / empty_for_all>
 * ### search for files / folders
 
 ```
-ttree --find=<file/folder name>
+ttree --finde=<file/folder name>
 ```
 <!-- ![Alt text](https://github.com/bendikMichal/termtree/blob/images/ttree02.PNG) -->
 

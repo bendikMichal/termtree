@@ -46,7 +46,7 @@ int main (int argc, char *argv[]) {
 		if (strcmp(args[i].label, LLabels[HELP]) == 0 || strcmp(args[i].label, SLabels[HELP]) == 0) {
 			printf(rawHelpString, 
 					LLabels[HELP], SLabels[HELP],
-					LLabels[SEARCH], SLabels[SEARCH],
+					LLabels[SEARCH_IN_FILE], SLabels[SEARCH_IN_FILE],
 					LLabels[FIND], SLabels[FIND],
 					LLabels[MAX_INDEX], SLabels[MAX_INDEX],
 					LLabels[LEAVE_OPEN], SLabels[LEAVE_OPEN],
@@ -55,7 +55,7 @@ int main (int argc, char *argv[]) {
 			return 0;
 		}
 		// in-file search
-		else if (strcmp(args[i].label, LLabels[SEARCH]) == 0 || strcmp(args[i].label, SLabels[SEARCH]) == 0) {
+		else if (strcmp(args[i].label, LLabels[SEARCH_IN_FILE]) == 0 || strcmp(args[i].label, SLabels[SEARCH_IN_FILE]) == 0) {
 			if (args[i].value == NULL) {
 				fprintf(stderr, "Missing value for in-file search \n");
 				return 1;
