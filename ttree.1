@@ -1,4 +1,4 @@
-.TH TTREE 1 TTREE\-2.2.5
+.TH TTREE 1 TTREE\-2.2.6
 .SH NAME
 ttree \-a tree list of files and directories
 .SH SYNOPSIS
@@ -39,6 +39,12 @@ for all file types
 .TP
 .B -L, --leave-open
  Wait for user input to exit.
+
+.TP
+.B -a, --all
+Display all files when using \fIsearch-in-file\fR or \fIfind\fR, including ones that do not fulfill the search criteria.
+
+.B (ignored when not using search or find)
 
 .SH AUTHOR
 Written by noTme.

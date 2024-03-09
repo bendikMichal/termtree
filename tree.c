@@ -28,6 +28,7 @@ int main (int argc, char *argv[]) {
 	char *fileType = calloc(2, sizeof(char));
 
 	bool wait = false;
+	bool displayAllFiles = false;
 
 	if (argc > 16) {
 		fprintf(stderr, "Too many arguments passed !\n");
@@ -50,7 +51,8 @@ int main (int argc, char *argv[]) {
 					LLabels[FIND], SLabels[FIND],
 					LLabels[MAX_INDEX], SLabels[MAX_INDEX],
 					LLabels[LEAVE_OPEN], SLabels[LEAVE_OPEN],
-					LLabels[VERSION], SLabels[VERSION]
+					LLabels[VERSION], SLabels[VERSION],
+					LLabels[ALL], SLabels[ALL]
 					);
 			return 0;
 		}
@@ -93,6 +95,11 @@ int main (int argc, char *argv[]) {
 			printf("TermTree v%s\n", version);
 			return 0;
 		}
+		// display all items, not only the searched ones
+		else if (strcmp(args[i].label, LLabels[ALL]) == 0 || strcmp(args[i].label, SLabels[ALL]) == 0) {
+			displayAllFiles = true;
+		}
+		// Unknown flag
 		else {
 			fprintf(stderr, "Unknown flag: >%s<\n", args[i].label);
 			return 1;
@@ -103,7 +110,7 @@ int main (int argc, char *argv[]) {
 	DIR *directory;
 	
 	printf(".\n");
-	ls(".", directory, 0, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType);
+	ls(".", directory, 0, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, displayAllFiles);
 
 	printf(CNORM);
 

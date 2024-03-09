@@ -11,7 +11,7 @@
 # define CBLUE_FG "\x1B[34m"
 # define MAX_LABEL_LEN 64
 
-# define version "2.2.5"
+# define version "2.2.6"
 
 enum ARG_TYPES {
 	HELP,
@@ -19,7 +19,8 @@ enum ARG_TYPES {
 	FIND,
 	MAX_INDEX,
 	LEAVE_OPEN,
-	VERSION
+	VERSION,
+	ALL
 };
 
 # endif

@@ -11,7 +11,7 @@
 # include "common.h"
 # include "../stringEx/stringEx.h"
 
-long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType) {
+long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType, bool displayAllFiles) {
 	char *spacetab = " |  ";
 
 	long long dirsize = 0;
@@ -23,6 +23,8 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 		return 0;
 	}
 	struct stat st;
+
+	bool displayFolderSize = !searchEnabled || displayAllFiles;
 
 	while ((item = readdir(directory)) != NULL) {
 		if (strcmp(item->d_name, ".") != 0 && strcmp(item->d_name, "..") != 0) {
@@ -38,7 +40,9 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 			bool searchFound = false;
 			if (strstr(item->d_name, search) && searchEnabled) {
 				printf(CBLACK);
+
 				searchFound = true;
+				displayFolderSize = true;
 			}
 
 			// creating new path
@@ -65,12 +69,12 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 						printf("%s", CBLACK);
 					}
 
-					printf("^ %s%s%s%s%s \t\t [ %s ]%s\n", CBOLD, CBLUE_FG, item->d_name, CNORM, CBOLD, newpath, CNORM);
+					if (!searchEnabled || searchFound || displayAllFiles) printf("^ %s%s%s%s%s \t\t [ %s ]%s\n", CBOLD, CBLUE_FG, item->d_name, CNORM, CBOLD, newpath, CNORM);
 				}
 
 				bool hasPermission = (st.st_mode & S_IRUSR) | (st.st_mode & S_IRGRP);
 				// recursive call
-				if (hasPermission) dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType);
+				if (hasPermission) dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, displayAllFiles);
 
 			} else {
 				// file type
@@ -85,47 +89,52 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 				bool found = false;
 				if (fileSearchEnabled && (strcmp(fileType, cFileType) == 0 || strcmp(fileType, "") == 0) && !isSymLink) {
 					found = findInFile(newpath, fileSearch);
+					displayFolderSize = found || !searchEnabled || displayAllFiles || displayFolderSize;
 				}
 				if (found) {
 					printf(CBLACK);
 				}
-
 				// print name
 				if (indentation + 1 < maxIndentation || found || searchFound) {
-					// fill indentation if hadn't already
-					if (indentation + 1 >= maxIndentation) {
-						printf("%s", CNORM);
-						printIndentation(indentation);
-						printf("%s", CBLACK);
-					}
 
-					int tempLen = normalize((long long)(unsigned long)st.st_size);
+					if (!searchEnabled || searchFound || found || displayAllFiles) {
+						// fill indentation if hadn't already
+						if (indentation + 1 >= maxIndentation) {
+							printf("%s", CNORM);
+							printIndentation(indentation);
+							printf("%s", CBLACK);
+						}
 
-					for (int i = 0 ; i < 12 - tempLen ; i++) {
-						printf(" ");
-					}
-					printf("] ");
-					
-					if (isSymLink) {
-						printf("%s%s%s", CRED_FG, item->d_name, CNORM);
-					}
-					else if (isExec) {
-						printf("%s%s%s", CGREEN_FG, item->d_name, CNORM);
-					} else {
-						printf("%s%s", item->d_name, CNORM);
-					}
+						int tempLen = normalize((long long)(unsigned long)st.st_size);
 
-					if (found || searchFound) {
-						printf("%s\t\t [ %s ]%s", CBOLD, newpath, CNORM);
+						for (int i = 0 ; i < 12 - tempLen ; i++) {
+							printf(" ");
+						}
+						printf("] ");
+						
+						if (isSymLink) {
+							printf("%s%s%s", CRED_FG, item->d_name, CNORM);
+						}
+						else if (isExec) {
+							printf("%s%s%s", CGREEN_FG, item->d_name, CNORM);
+						} else {
+							printf("%s%s", item->d_name, CNORM);
+						}
+
+						if (found || searchFound) {
+							printf("%s\t\t [ %s ]%s", CBOLD, newpath, CNORM);
+						}
+						printf("\n");
 					}
-					printf("\n");
 				}
 			}
 			printf(CNORM);
 		}
 	}
 	
-	if (indentation < maxIndentation) {
+	if ((indentation < maxIndentation && displayFolderSize) || indentation <= 0) {
+		if (indentation <= 0) printf(" >v---%sTOTAL:%s----------------------< \n", CBOLD, CNORM);
+
 		for (int i = 0 ; i < indentation - 1 ; i++) {
 			printf("  | ");
 		}

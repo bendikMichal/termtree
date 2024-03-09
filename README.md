@@ -50,6 +50,7 @@ $ ttree -i 3
   | ^ example_inside_dir                 [ ./example_dir_2/example_inside_dir ]
   |   |_[ 0 b       ]
   |_[ 0 b       ]
+ >v---TOTAL:----------------------<
   |_[ 213 b     ]
 
 ```

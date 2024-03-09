@@ -12,16 +12,18 @@ char LLabels[][MAX_LABEL_LEN] = {
 	"--find",
 	"--max-index",
 	"--leave-open",
-	"--version"
-
+	"--version",
+	"--all",
 };
+
 char SLabels[][MAX_LABEL_LEN] = {
 	"-h",
 	"-s",
 	"-f",
 	"-i",
 	"-L",
-	"-v"
+	"-v",
+	"-a"
 };
 
 char *rawHelpString = 
@@ -31,7 +33,8 @@ char *rawHelpString =
 	"\t %s, %s <file/folder name> \n\t\t- find a specific file/folder name\n"
 	"\t %s. %s <number> \n\t\t- replace <number> with a whole number specifing how deep into the folders should the seach go\n"
 	"\t %s, %s \n\t\t- wait for a keypress to close the program\n"
-	"\t %s, %s \n\t\t- display version number\n";
+	"\t %s, %s \n\t\t- display version number\n"
+	"\t %s, %s \n\t\t- display all files otherwise hidden by search\n";
 
 int normalize (long long bytes) {
 	if (bytes < 0) return 0;
