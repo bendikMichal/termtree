@@ -4,11 +4,16 @@
 
 # include "../tree.h"
 
-void setSearch(char *argv, char *search);
+typedef struct SEARCH_POINTERS {
+	char *fileSearch;
+	char *fileType;
+} SEARCH_POINTERS;
+
+char* setSearch(char *argv, char *search);
 
 int setIndentation(char *argv);
 
-int setFileSearch(char *argv, char *fileSearch, char *fileType);
+int setFileSearch(char *argv, SEARCH_POINTERS* sp);
 
 typedef struct ARG {
 	char *label;

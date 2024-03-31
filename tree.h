@@ -9,9 +9,9 @@
 # define CRED_FG "\x1B[31m"
 # define CGREEN_FG "\x1B[32m"
 # define CBLUE_FG "\x1B[34m"
-# define MAX_LABEL_LEN 64
+# define MAX_LABEL_LEN 128
 
-# define version "2.2.6"
+# define version "2.2.7"
 
 enum ARG_TYPES {
 	HELP,

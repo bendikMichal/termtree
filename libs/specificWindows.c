@@ -66,7 +66,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 							printf("%s", CBLACK);
 						}
 
-						if (!searchEnabled || searchFound || displayAllFiles) printf("^ %s%s%s%s%s \t\t [ %s ]%s\n", CBOLD, CBLUE_FG, item->d_name, CNORM, CBOLD, newpath, CNORM);
+						if ((!searchEnabled && !fileSearchEnabled) || searchFound || displayAllFiles) printf("^ %s%s%s%s%s \t\t [ %s ]%s\n", CBOLD, CBLUE_FG, item->d_name, CNORM, CBOLD, newpath, CNORM);
 					}
 
 					bool hasPermission = (st.st_mode & S_IRUSR) | (st.st_mode & S_IRGRP);
@@ -86,7 +86,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 					bool found = false;
 					if (fileSearchEnabled && (strcmp(fileType, cFileType) == 0 || strcmp(fileType, "") == 0)) {
 						found = findInFile(newpath, fileSearch);
-						displayFolderSize = found || !searchEnabled || displayAllFiles || displayFolderSize;
+						displayFolderSize = found || (!searchEnabled && !fileSearchEnabled) || displayAllFiles || displayFolderSize;
 					}
 					if (found) {
 						printf("%s", CBLACK);
@@ -95,7 +95,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 					// print name
 					if (indentation + 1 < maxIndentation || found || searchFound) {
 
-						if (!searchEnabled || searchFound || found || displayAllFiles) {
+						if ((!searchEnabled && !fileSearchEnabled) || found || searchFound || found || displayAllFiles) {
 							// fill indentation if hadn't already
 							if (indentation + 1 >= maxIndentation) {
 								printf("%s", CNORM);

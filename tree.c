@@ -24,8 +24,11 @@ int main (int argc, char *argv[]) {
 	char *search = calloc(2, sizeof(char));
 	
 	bool fileSearchEnabled = false;
-	char *fileSearch = calloc(2, sizeof(char));
-	char *fileType = calloc(2, sizeof(char));
+
+	SEARCH_POINTERS sp = {
+		.fileSearch = calloc(2, sizeof(char)),
+		.fileType = calloc(2, sizeof(char))
+	};
 
 	bool wait = false;
 	bool displayAllFiles = false;
@@ -63,7 +66,7 @@ int main (int argc, char *argv[]) {
 				return 1;
 			}
 			fileSearchEnabled = true;
-			int res = setFileSearch(args[i].value, fileSearch, fileType);
+			int res = setFileSearch(args[i].value, &sp);
 			if (res == 1) {
 				fprintf(stderr, "Failed to set in-file search \n");
 				return 1;
@@ -76,7 +79,7 @@ int main (int argc, char *argv[]) {
 				return 1;
 			}
 			searchEnabled = true;
-			setSearch(args[i].value, search);
+			search = setSearch(args[i].value, search);
 		}
 		// max-indentation also known as max index
 		else if (strcmp(args[i].label, LLabels[MAX_INDEX]) == 0 || strcmp(args[i].label, SLabels[MAX_INDEX]) == 0) {
@@ -110,7 +113,7 @@ int main (int argc, char *argv[]) {
 	DIR *directory;
 	
 	printf(".\n");
-	ls(".", directory, 0, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, displayAllFiles);
+	ls(".", directory, 0, maxIndentation, search, searchEnabled, sp.fileSearch, fileSearchEnabled, sp.fileType, displayAllFiles);
 
 	printf(CNORM);
 
@@ -121,7 +124,7 @@ int main (int argc, char *argv[]) {
 
 	free(args);
 	free(search);
-	free(fileSearch);
-	free(fileType);
+	free(sp.fileSearch);
+	free(sp.fileType);
 	return 0;
 }
