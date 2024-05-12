@@ -13,7 +13,7 @@ ARG* getArgs(int argc, char *argv[]) {
 
 	for (int i = 1; i < argc; i++) {
 
-		if (argv[i][0] == '-' && argv[i][1] == '-') {
+		if (strlen(argv[i]) >= 2 && argv[i][0] == '-' && argv[i][1] == '-') {
 			nlabel ++;
 			int splitIndex = findChar(argv[i], '=');
 
