@@ -39,19 +39,26 @@ make uninstall
 $ ttree -i 3
 .
 ^ example_dir_3                  [ ./example_dir_3 ]
-  | [ 101 b     ] example_file.txt
-  | [ 14 b      ] example_file_2.txt
-  |_[ 115 b     ]
-[ 98 b      ] example_file.txt
+  ├─ [ 101 b     ] example_file.txt
+  ├─ [ 14 b      ] example_file_2.txt
+  └─[ 115 b     ]
+
+[ 103 b     ] example_file.txt
 ^ example_dir_1                  [ ./example_dir_1 ]
-  | [ 0 b       ] example_file.txt
-  |_[ 0 b       ]
+  ├─ [ 0 b       ] example_file.txt
+  └─[ 0 b       ]
+
+[ 30 b      ] .somefile
+[ 320 b     ] find-infile.sh
 ^ example_dir_2                  [ ./example_dir_2 ]
-  | ^ example_inside_dir                 [ ./example_dir_2/example_inside_dir ]
-  |   |_[ 0 b       ]
-  |_[ 0 b       ]
- >v---TOTAL:----------------------<
-  |_[ 213 b     ]
+  ├─ ^ example_inside_dir                [ ./example_dir_2/example_inside_dir ]
+  │   └─[ 0 b       ]
+  │ 
+  └─[ 0 b       ]
+
+[ 0 b       ] executable_example
+ >v---TOTAL:----------------------< 
+  └─[ 568 b     ]
 
 ```
 

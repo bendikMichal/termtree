@@ -32,7 +32,9 @@ int main (int argc, char *argv[]) {
 
 	bool wait = false;
 	bool displayAllFiles = false;
+	bool use_old_style = false;
 
+	// careful when adding falgs in future, might need to be increased
 	if (argc > 16) {
 		fprintf(stderr, "Too many arguments passed !\n");
 		return 1;
@@ -55,7 +57,8 @@ int main (int argc, char *argv[]) {
 					LLabels[MAX_INDEX], SLabels[MAX_INDEX],
 					LLabels[LEAVE_OPEN], SLabels[LEAVE_OPEN],
 					LLabels[VERSION], SLabels[VERSION],
-					LLabels[ALL], SLabels[ALL]
+					LLabels[ALL], SLabels[ALL],
+					LLabels[OLD_STYLE], SLabels[OLD_STYLE]
 					);
 			return 0;
 		}
@@ -102,6 +105,10 @@ int main (int argc, char *argv[]) {
 		else if (strcmp(args[i].label, LLabels[ALL]) == 0 || strcmp(args[i].label, SLabels[ALL]) == 0) {
 			displayAllFiles = true;
 		}
+		// use old visual style 
+		else if (strcmp(args[i].label, LLabels[OLD_STYLE]) == 0 || strcmp(args[i].label, SLabels[OLD_STYLE]) == 0) {
+			use_old_style = true;
+		}
 		// Unknown flag
 		else {
 			fprintf(stderr, "Unknown flag: >%s<\n", args[i].label);
@@ -113,7 +120,7 @@ int main (int argc, char *argv[]) {
 	DIR *directory;
 	
 	printf(".\n");
-	ls(".", directory, 0, maxIndentation, search, searchEnabled, sp.fileSearch, fileSearchEnabled, sp.fileType, displayAllFiles);
+	ls(".", directory, 0, maxIndentation, search, searchEnabled, sp.fileSearch, fileSearchEnabled, sp.fileType, displayAllFiles, use_old_style);
 
 	printf(CNORM);
 

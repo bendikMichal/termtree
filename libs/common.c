@@ -14,6 +14,7 @@ char LLabels[][MAX_LABEL_LEN] = {
 	"--leave-open",
 	"--version",
 	"--all",
+	"--use-old-style"
 };
 
 char SLabels[][MAX_LABEL_LEN] = {
@@ -23,7 +24,8 @@ char SLabels[][MAX_LABEL_LEN] = {
 	"-i",
 	"-L",
 	"-v",
-	"-a"
+	"-a",
+	"-o"
 };
 
 char *rawHelpString = 
@@ -34,7 +36,8 @@ char *rawHelpString =
 	"\t %s. %s <number> \n\t\t- replace <number> with a whole number specifing how deep into the folders should the seach go\n"
 	"\t %s, %s \n\t\t- wait for a keypress to close the program\n"
 	"\t %s, %s \n\t\t- display version number\n"
-	"\t %s, %s \n\t\t- display all files otherwise hidden by search\n";
+	"\t %s, %s \n\t\t- display all files otherwise hidden by search\n"
+	"\t %s, %s \n\t\t- use old visual style without the pretty glyphs\n";
 
 int normalize (long long bytes) {
 	if (bytes < 0) return 0;
@@ -84,9 +87,16 @@ bool findInFile (char *filename, char *item) {
 	return false;
 }
 
-void printIndentation (int indentation) {
+void printIndentation (int indentation, bool use_old_style) {
 	for (int i = 0 ; i < indentation ; i++) {
-		printf("  | ");
+		if (!use_old_style) {
+			if (i < indentation - 1) printf("  %s ", PIPE);
+			else printf("  %s%s ", LEAD, DASH);
+
+		} else {
+			printf("  %s ", PIPE_OLD);
+
+		}
 	}
 }
 

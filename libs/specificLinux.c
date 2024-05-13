@@ -11,8 +11,8 @@
 # include "common.h"
 # include "../stringEx/stringEx.h"
 
-long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType, bool displayAllFiles) {
-	char *spacetab = " |  ";
+long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType, bool displayAllFiles, bool use_old_style) {
+	char *spacetab = " │  ";
 
 	long long dirsize = 0;
 
@@ -33,7 +33,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 			// make indentation
 			if (indentation + 1 < maxIndentation) {
-				printIndentation(indentation);
+				printIndentation(indentation, use_old_style);
 			}
 
 			// checking if searched file name
@@ -65,7 +65,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 					// fill indentation if hadn't already
 					if (indentation + 1 >= maxIndentation) {
 						printf("%s", CNORM);
-						printIndentation(indentation);
+						printIndentation(indentation, use_old_style);
 						printf("%s", CBLACK);
 					}
 
@@ -74,7 +74,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 				bool hasPermission = (st.st_mode & S_IRUSR) | (st.st_mode & S_IRGRP);
 				// recursive call
-				if (hasPermission) dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, displayAllFiles);
+				if (hasPermission) dirsize += ls(newpath, directory, indentation + 1, maxIndentation, search, searchEnabled, fileSearch, fileSearchEnabled, fileType, displayAllFiles, use_old_style);
 
 			} else {
 				// file type
@@ -101,7 +101,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 						// fill indentation if hadn't already
 						if (indentation + 1 >= maxIndentation) {
 							printf("%s", CNORM);
-							printIndentation(indentation);
+							printIndentation(indentation, use_old_style);
 							printf("%s", CBLACK);
 						}
 
@@ -136,9 +136,9 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 		if (indentation <= 0) printf(" >v---%sTOTAL:%s----------------------< \n", CBOLD, CNORM);
 
 		for (int i = 0 ; i < indentation - 1 ; i++) {
-			printf("  | ");
+			printf("  %s ", use_old_style ? PIPE_OLD : PIPE);
 		}
-		printf("  |_");
+		printf("  %s%s", use_old_style ? LEG_OLD : LEG, use_old_style ? DASH_OLD : DASH);
 		
 		int tempLen = normalize(dirsize);
 		for (int i = 0 ; i < 12 - tempLen ; i++) {
@@ -149,7 +149,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 		// spacer after a directory
 		for (int i = 0 ; i < indentation - 1 ; i++) {
-			printf("  | ");
+			printf("  %s ", use_old_style ? PIPE_OLD : PIPE);
 		}
 		printf("\n");
 	}

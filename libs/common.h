@@ -10,6 +10,6 @@ extern char *rawHelpString;
 
 int normalize (long long bytes);
 bool findInFile (char *filename, char *item);
-void printIndentation (int indentation);
+void printIndentation (int indentation, bool use_old_style);
 
 # endif
