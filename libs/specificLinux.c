@@ -12,7 +12,6 @@
 # include "../stringEx/stringEx.h"
 
 long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation, char *search, bool searchEnabled, char *fileSearch, bool fileSearchEnabled, char *fileType, bool displayAllFiles, bool use_old_style) {
-	char *spacetab = " │  ";
 
 	long long dirsize = 0;
 
