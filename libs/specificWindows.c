@@ -83,8 +83,8 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 				} else {
 					// file type
-					char cFileType[64] = "";
-					substring(item->d_name, cFileType, findChar(item->d_name, '.') + 1, 512);
+					char cFileType[512] = "";
+					substring(item->d_name, cFileType, findLastCharOccurence(item->d_name, '.') + 1, 512);
 					dirsize += (long long)(unsigned long)st.st_size;
 
 					// file type check

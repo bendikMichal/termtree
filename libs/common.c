@@ -71,7 +71,7 @@ bool findInFile (char *filename, char *item) {
 	file = fopen(filename, "r");
 	
 	if (file == NULL) {
-		fclose(file);
+		fprintf(stderr, "Failed to open file for reading! filename: %s\n", filename);
 		return false;
 	}
 
