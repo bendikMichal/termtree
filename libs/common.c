@@ -30,6 +30,7 @@ char SLabels[][MAX_LABEL_LEN] = {
 
 char *rawHelpString = 
 	"Help for TermTree \n"
+	"Usage: ttree [ path ](optoinal) [ args ] ...\n"
 	"\t %s, %s \n\t\t- shows help\n"
 	"\t %s, %s <text>/<file_type> \n\t\t- search in file, if <file_type> is empty, search will be in all files\n"
 	"\t %s, %s <file/folder name> \n\t\t- find a specific file/folder name\n"
