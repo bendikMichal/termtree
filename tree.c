@@ -46,8 +46,9 @@ int main (int argc, char *argv[]) {
 	} 
 
 	// check if first argument is path and skip it if is
-	if (argv[DEFAULT_ARG_START][0] != '-') {
+	if (argc > 1 && argv[DEFAULT_ARG_START][0] != '-') {
 		arg_start += 1;
+
 		int new_len = strlen(argv[DEFAULT_ARG_START]);
 		char *tmp = realloc(starting_directory, new_len);
 
@@ -59,6 +60,7 @@ int main (int argc, char *argv[]) {
 		starting_directory = tmp;
 		strncpy(starting_directory, argv[DEFAULT_ARG_START], new_len);
 	}
+
 
 	int labelCount = getLabelCount(argc, argv, arg_start);
 	ARG *args = getArgs(argc, argv, arg_start);
