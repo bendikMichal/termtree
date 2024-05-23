@@ -34,15 +34,34 @@ int main (int argc, char *argv[]) {
 	bool displayAllFiles = false;
 	bool use_old_style = false;
 
+	int arg_start = DEFAULT_ARG_START;
+	char default_starting_directory[] = ".";
+	char *starting_directory = calloc(1, sizeof(char));
+	strncpy(starting_directory, default_starting_directory, 1);
+
 	// careful when adding falgs in future, might need to be increased
 	if (argc > 16) {
 		fprintf(stderr, "Too many arguments passed !\n");
 		return 1;
 	} 
 
+	// check if first argument is path and skip it if is
+	if (argv[DEFAULT_ARG_START][0] != '-') {
+		arg_start += 1;
+		int new_len = strlen(argv[DEFAULT_ARG_START]);
+		char *tmp = realloc(starting_directory, new_len);
 
-	int labelCount = getLabelCount(argc, argv);
-	ARG *args = getArgs(argc, argv);
+		if (tmp == NULL) {
+			fprintf(stderr, "Failed to realloc memory, exiting...\n");
+			return 1;
+		}
+
+		starting_directory = tmp;
+		strncpy(starting_directory, argv[DEFAULT_ARG_START], new_len);
+	}
+
+	int labelCount = getLabelCount(argc, argv, arg_start);
+	ARG *args = getArgs(argc, argv, arg_start);
 	if (args == NULL) {
 		return 1;
 	}
@@ -120,7 +139,7 @@ int main (int argc, char *argv[]) {
 	DIR *directory;
 	
 	printf(".\n");
-	ls(".", directory, 0, maxIndentation, search, searchEnabled, sp.fileSearch, fileSearchEnabled, sp.fileType, displayAllFiles, use_old_style);
+	ls(starting_directory, directory, 0, maxIndentation, search, searchEnabled, sp.fileSearch, fileSearchEnabled, sp.fileType, displayAllFiles, use_old_style);
 
 	printf(CNORM);
 
@@ -133,5 +152,6 @@ int main (int argc, char *argv[]) {
 	free(search);
 	free(sp.fileSearch);
 	free(sp.fileType);
+	free(starting_directory);
 	return 0;
 }

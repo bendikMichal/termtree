@@ -7,11 +7,11 @@
 # include "../stringEx/stringEx.h"
 
 // don't forget to free returned value
-ARG* getArgs(int argc, char *argv[]) {
+ARG* getArgs(int argc, char *argv[], int arg_start) {
 	ARG *args = (ARG *) calloc(16, sizeof(ARG));
 	int nlabel = -1;
 
-	for (int i = 1; i < argc; i++) {
+	for (int i = arg_start; i < argc; i++) {
 
 		if (strlen(argv[i]) >= 2 && argv[i][0] == '-' && argv[i][1] == '-') {
 			nlabel ++;
@@ -48,10 +48,10 @@ ARG* getArgs(int argc, char *argv[]) {
 }
 
 // returns count of labels
-int getLabelCount(int argc, char *argv[]) {
+int getLabelCount(int argc, char *argv[], int arg_start) {
 	int nlabel = 0;
 	char pre[2];
-	for (int i = 1; i < argc; i++) {
+	for (int i = arg_start; i < argc; i++) {
 		if (argv[i][0] == '-' || (argv[i][0] == '-' && argv[i][1] == '-')) {
 			nlabel ++;
 		}

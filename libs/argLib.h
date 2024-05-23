@@ -3,6 +3,7 @@
 # define __ARGLIBH
 
 # include "../tree.h"
+# define DEFAULT_ARG_START 1
 
 typedef struct SEARCH_POINTERS {
 	char *fileSearch;
@@ -22,8 +23,8 @@ typedef struct ARG {
 	char av[2048];
 } ARG;
 
-ARG* getArgs(int argc, char *argv[]);
+ARG* getArgs(int argc, char *argv[], int arg_start);
 
-int getLabelCount(int argc, char *argv[]);
+int getLabelCount(int argc, char *argv[], int arg_start);
 
 # endif
