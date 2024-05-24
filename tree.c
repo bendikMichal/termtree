@@ -40,6 +40,7 @@ int main (int argc, char *argv[]) {
 	strncpy(starting_directory, default_starting_directory, 1);
 
 	// careful when adding falgs in future, might need to be increased
+	// current max is: 13
 	if (argc > 16) {
 		fprintf(stderr, "Too many arguments passed !\n");
 		return 1;
