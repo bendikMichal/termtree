@@ -17,6 +17,12 @@ ARG* getArgs(int argc, char *argv[], int arg_start) {
 			nlabel ++;
 			int splitIndex = findChar(argv[i], '=');
 
+			if (splitIndex >= MAX_LABEL_LEN) {
+				fprintf(stderr, "Argument name length more than %d detected\n", MAX_LABEL_LEN - 1);
+				free(args);
+				exit(1);
+			}
+
 			if (splitIndex >= 0) {
 				substring(argv[i], args[nlabel].al, 0, splitIndex);
 				substring(argv[i], args[nlabel].av, splitIndex + 1, 2047);
