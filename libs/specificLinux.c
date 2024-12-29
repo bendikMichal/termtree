@@ -1,7 +1,6 @@
 
 # include <stdio.h>
 # include <stdlib.h>
-# include <math.h>
 # include <string.h>
 # include <stdbool.h>
 # include <dirent.h>
@@ -31,7 +30,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 			printf(CNORM);
 
 			// make indentation
-			if (indentation + 1 < maxIndentation) {
+			if (indentation + 1 < maxIndentation && displayFolderSize) {
 				printIndentation(indentation, use_old_style);
 			}
 
@@ -62,7 +61,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 			if(item->d_type == DT_DIR) {
 				if (indentation + 1 < maxIndentation || searchFound) {
 					// fill indentation if hadn't already
-					if (indentation + 1 >= maxIndentation) {
+					if (indentation + 1 >= maxIndentation && displayFolderSize) {
 						printf("%s", CNORM);
 						printIndentation(indentation, use_old_style);
 						printf("%s", CBLACK);
@@ -98,7 +97,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 
 					if ((!searchEnabled && !fileSearchEnabled) || found || searchFound || found || displayAllFiles) {
 						// fill indentation if hadn't already
-						if (indentation + 1 >= maxIndentation) {
+						if (indentation + 1 >= maxIndentation && displayFolderSize) {
 							printf("%s", CNORM);
 							printIndentation(indentation, use_old_style);
 							printf("%s", CBLACK);
@@ -131,6 +130,7 @@ long long ls(char *dirname, DIR *directory, int indentation, int maxIndentation,
 		}
 	}
 	
+
 	if ((indentation < maxIndentation && displayFolderSize) || indentation <= 0) {
 		if (indentation <= 0) printf(" >v---%sTOTAL:%s----------------------< \n", CBOLD, CNORM);
 

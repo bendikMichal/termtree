@@ -20,7 +20,7 @@
 # define PIPE_OLD "|"
 # define LEG_OLD  "|"
 
-# define version "2.3.2 rel1"
+# define version "2.3.2 rel2"
 
 enum ARG_TYPES {
 	HELP,

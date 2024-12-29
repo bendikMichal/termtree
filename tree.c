@@ -138,6 +138,10 @@ int main (int argc, char *argv[]) {
 		}
 	}
 
+	if (searchEnabled || fileSearchEnabled) {
+		maxIndentation = 2;
+	}
+
 
 	DIR *directory;
 	
